@@ -1,0 +1,301 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'ORDER_TITLE' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isEmptyViewVisible" icon="alert-circle-outline" [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_NETWORK' | translate">
+    </empty-view>
+
+    <ion-row class="ion-justify-content-center" *ngIf="isContentViewVisible">
+      <ion-col size-xs="12" size-lg="8">
+
+        <div>
+          <ion-list lines="none">
+            <ion-list-header>
+              <div class="flex align-items-center">
+                <h5 class="ion-no-margin">
+                  {{ 'ORDER' | translate }} #{{ order?.number }}&nbsp;&nbsp;
+                </h5>
+                <ion-button class="ion-text-capitalize ion-no-margin" strong size="small" fill="solid" color="success"
+                  [disabled]="!order?.isShippedOut()" (click)="onMarkAsReceived()">
+                  {{ 'MARK_AS_RECEIVED' | translate }}
+                </ion-button>
+              </div>
+            </ion-list-header>
+
+            <ion-list class="ion-margin-top ion-no-padding">
+              <div class="radius" *ngFor="let item of order?.items">
+                <ion-item class="cart-item">
+                  <ion-thumbnail slot="start" *ngIf="item.featuredImageThumb">
+                    <img [src]="item.featuredImageThumb?.url()" />
+                  </ion-thumbnail>
+                  <ion-label class="ion-text-wrap">
+                    <ion-text color="dark">
+                      <p class="text-normal mb-8">{{ item.qty }} x {{ item.name }}</p>
+                      <p *ngIf="item.variation">
+                        <span class="bold">{{ 'VARIANT' | translate }}:</span> {{ item.variation.name }}
+                      </p>
+                    </ion-text>
+
+                  </ion-label>
+
+                  <div slot="end">
+                    <p class="text-medium" *ngIf="item.hasOwnProperty('finalAmount'); else showOnlyAmount">
+                      <span *ngIf="item.amount > item.finalAmount">
+                        <ion-text color="medium">
+                          <s class="text-small">
+                            {{ item.amount | currencyGlobal }}
+                          </s>
+                        </ion-text>
+                        <br />
+                        <span>
+                          {{ item.finalAmount | currencyGlobal }}
+                        </span>
+                      </span>
+                      <span *ngIf="item.amount <= item.finalAmount">
+                        <span>{{ item.finalAmount | currencyGlobal }}</span>
+                      </span>
+                    </p>
+
+                    <ng-template #showOnlyAmount>
+                      <p class="text-medium">
+                        {{ item.amount | currencyGlobal }}
+                      </p>
+                    </ng-template>
+                  </div>
+
+                </ion-item>
+
+                <ion-button class="ion-margin ion-text-capitalize" color="dark" size="small" strong
+                  (click)="onPresentReviewAddModal(item)" [disabled]="!order?.isDelivered() || item.rating">
+                  {{ 'REVIEW_THIS_ITEM' | translate }}
+                </ion-button>
+              </div>
+
+              <div class="divider"></div>
+
+              <ion-item>
+                <ion-label>
+                  <ion-text color="dark">
+                    <p>{{ 'SUBTOTAL' | translate }}</p>
+                  </ion-text>
+                </ion-label>
+
+                <div slot="end">
+                  <ion-text color="dark">
+                    <p class="text-medium">{{ order?.subtotal | currencyGlobal }}</p>
+                  </ion-text>
+                </div>
+              </ion-item>
+
+              <ion-item *ngIf="order?.coupon">
+                <ion-label>
+                  <ion-text color="dark">
+                    <p>
+                      {{ 'COUPON_DISCOUNT' | translate }}
+                      ({{ order?.coupon?.name }})
+                    </p>
+                  </ion-text>
+                </ion-label>
+
+                <div slot="end">
+                  <ion-text color="dark">
+                    <p class="text-medium">
+                      {{ -order?.coupon.amount | currencyGlobal }}
+                    </p>
+                  </ion-text>
+                </div>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>
+                  <ion-text color="dark">
+                    <p>{{ 'SHIPPING_FEE' | translate }}</p>
+                  </ion-text>
+                </ion-label>
+
+                <div slot="end">
+                  <ion-text color="dark">
+                    <p class="text-medium">{{ order?.shippingFee | currencyGlobal }}</p>
+                  </ion-text>
+                </div>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>
+                  <ion-text color="dark">
+                    <p>{{ 'TOTAL' | translate }}</p>
+                  </ion-text>
+                </ion-label>
+
+                <div slot="end">
+                  <ion-text color="dark">
+                    <p class="text-medium">{{ order?.total | currencyGlobal }}</p>
+                  </ion-text>
+                </div>
+              </ion-item>
+
+            </ion-list>
+
+            <ion-list-header class="ion-margin-vertical">
+              <h5>{{ 'CONTACT_INFO' | translate }}</h5>
+            </ion-list-header>
+
+            <ion-item class="radius">
+              <ion-label>
+                <p>{{ order?.contact.email }}</p>
+              </ion-label>
+            </ion-item>
+
+            <ion-list-header class="ion-margin-vertical">
+              <h5>{{ 'SHIPPING_ADDRESS' | translate }}</h5>
+            </ion-list-header>
+
+            <ion-list class="ion-no-padding">
+              <ion-item class="radius">
+                <ion-label>
+                  <h2 class="bold">{{ order?.shipping?.name }}</h2>
+                  <p>
+                    {{ order?.shipping?.address }},
+                    {{ order?.shipping?.city }},
+                    {{ order?.shipping?.subzone?.name }},
+                    {{ order?.shipping?.zipcode }},
+                    {{ order?.shipping?.zone?.name }}
+                  </p>
+                  <p>{{ 'CONTACT_PHONE' | translate }}: {{ order?.shipping.phone }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+
+            <ion-list-header class="ion-margin-vertical" *ngIf="order?.tracking">
+              <h5 class="ion-no-margin">{{ 'TRACKING' | translate }}</h5>
+            </ion-list-header>
+
+            <ion-list class="ion-no-padding" *ngIf="order?.tracking">
+              <ion-item>
+                <ion-label>
+                  <p>
+                    <span class="bold">{{ 'TRACKING_NUMBER' | translate }}:</span>
+                    {{ order?.tracking.number || '---' }}
+                  </p>
+                  <p>
+                    <span class="bold">{{ 'CARRIER' | translate }}:</span>
+                    {{ order?.tracking.carrier || '---' }}
+                  </p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+
+            <ion-list-header class="ion-margin-vertical">
+              <h5>{{ 'PAYMENT' | translate }}</h5>
+            </ion-list-header>
+
+            <ion-list class="ion-no-padding">
+
+              <ion-item class="radius" *ngIf="order?.paymentMethod === 'Cash'">
+                <img src="./assets/imgs/cash.png" width="40" slot="start" />
+                <ion-label>
+                  <p>{{ 'CASH' | translate }}</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item *ngIf="order?.card">
+                <img src="./assets/imgs/{{formatBrand()}}.png" width="40" slot="start" />
+                <ion-label>
+                  <p *ngIf="order?.card">
+                    &#8226;&#8226;&#8226;&#8226; {{ order?.card.last4 }}
+                  </p>
+                </ion-label>
+              </ion-item>
+
+            </ion-list>
+
+            <ion-list-header class="ion-margin-vertical">
+              <h5>{{ 'MORE_INFO' | translate }}</h5>
+            </ion-list-header>
+
+            <ion-list class="ion-no-padding">
+
+              <ion-item class="radius">
+                <ion-label>
+                  <p>{{ 'STATUS' | translate }}</p>
+                </ion-label>
+
+                <div class="text-medium" slot="end">
+                  <span *ngIf="order?.status === 'Unpaid'">{{ 'UNPAID' | translate }}</span>
+                  <span *ngIf="order?.status === 'Paid'">{{ 'PAID' | translate }}</span>
+                  <span *ngIf="order?.status === 'Pending'">{{ 'PENDING' | translate }}</span>
+                  <span *ngIf="order?.status === 'In Process'">{{ 'IN_PROCESS' | translate }}</span>
+                  <span *ngIf="order?.status === 'Packed'">{{ 'PACKED' | translate }}</span>
+                  <span *ngIf="order?.status === 'Shipped Out'">{{ 'SHIPPED_OUT' | translate }}</span>
+                  <span *ngIf="order?.status === 'Delivered'">{{ 'DELIVERED' | translate }}</span>
+                  <span *ngIf="order?.status === 'Cancelled'">{{ 'CANCELLED' | translate }}</span>
+                </div>
+              </ion-item>
+
+              <ion-item *ngIf="order?.status === 'Cancelled' && order?.cancellationReason">
+                <ion-label>
+                  <p>{{ 'REASON' | translate }}: {{ order.cancellationReason }}</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>
+                  <p>{{ 'ORDER_DATE' | translate }}</p>
+                </ion-label>
+
+                <div slot="end">
+                  <p class="text-medium">{{ order?.createdAt | dateGlobal: 'mediumDate' }}</p>
+                </div>
+              </ion-item>
+
+            </ion-list>
+
+          </ion-list>
+
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <div *ngIf="isLoadingViewVisible">
+      <ion-row class="ion-margin-vertical ion-justify-content-center">
+        <ion-col size-xs="12" size-lg="10">
+          <div class="bg-light ion-padding">
+            <ngx-skeleton-loader count="5" [theme]="{ 'border-radius': '0', height: '50px', 'margin-bottom': '0' }">
+            </ngx-skeleton-loader>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-margin-vertical ion-justify-content-center">
+        <ion-col size-xs="12" size-lg="10">
+          <div class="bg-light ion-padding">
+            <ngx-skeleton-loader count="1" [theme]="{ 'border-radius': '0', height: '50px', 'margin-bottom': '0' }">
+            </ngx-skeleton-loader>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-margin-vertical ion-justify-content-center">
+        <ion-col size-xs="12" size-lg="10">
+          <div class="bg-light ion-padding">
+            <ngx-skeleton-loader count="1" [theme]="{ 'border-radius': '0', height: '50px', 'margin-bottom': '0' }">
+            </ngx-skeleton-loader>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,21 @@
+ion-content {
+  --background: var(--ion-color-light);
+}
+
+ion-grid {
+  background: #fff;
+}
+
+.item-input {
+  --border-color: var(--ion-color-medium);
+  --border-style: solid;
+  --border-width: 1px !important;
+}
+
+@media (max-width: 991px) {
+
+  ion-grid,
+  ion-grid>ion-row>ion-col {
+    padding: 0 !important;
+  }
+}

@@ -1,0 +1,53 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar mode="ios" placeholder="" (ionClear)="onSearchCleared()" (keyup.enter)="onSearch($event)">
+    </ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content #container scrollEvents="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" icon="heart-outline"
+      [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <div *ngIf="isContentViewVisible">
+      <ion-list [@staggerIn]="items.length">
+        <ion-row>
+          <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3" *ngFor="let item of items;trackBy:trackByFn">
+            <app-shop-item [item]="item" [customObservable]="loadAndScroll" [routerLink]="['./' + item.slug]">
+            </app-shop-item>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+      <ion-infinite-scroll (ionInfinite)="onLoadMore($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+
+    <ion-row *ngIf="isLoadingViewVisible" class="ion-justify-content-center">
+      <ion-col class="ion-text-center" size-xs="6" size-sm="4" size-md="4" size-lg="3" *ngFor="let item of skeletonArray">
+        <ngx-skeleton-loader count="1" appearance="circle"
+          [theme]="{ width: '100%', height: '240px', 'border-radius': '0' }">
+        </ngx-skeleton-loader>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

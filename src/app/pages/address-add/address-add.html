@@ -1,0 +1,99 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="onDismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-text color="dark">
+    <h4 class="bold ion-no-margin">
+      {{ 'SHIPPING_INFO' | translate }}
+    </h4>
+    <div class="line"></div>
+  </ion-text>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" #form1="ngForm" novalidate>
+    <ion-list lines="none">
+
+      <ion-label position="stacked" color="medium">
+        <span>{{ 'ZONE' | translate }}</span>
+      </ion-label>
+      <ion-item class="ion-margin-vertical" lines="none" color="light">
+        <ion-label>{{ 'ZONE' | translate }}</ion-label>
+        <ion-select (ionChange)="onZoneChanged()" formControlName="zone">
+          <ion-select-option *ngFor="let zone of zones" [value]="zone">
+            {{ zone.name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-label position="stacked" color="medium">
+        <span>{{ 'SUBZONE' | translate }}</span>
+      </ion-label>
+      <ion-item class="ion-margin-vertical" lines="none" color="light">
+        <ion-label>{{ 'SUBZONE' | translate }}</ion-label>
+        <ion-select formControlName="subzone">
+          <ion-select-option *ngFor="let subzone of subzones" [value]="subzone">
+            {{ subzone.name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-label position="stacked" color="medium">
+        <span>{{ 'CITY' | translate }}</span>
+      </ion-label>
+      <ion-item class="ion-margin-vertical" lines="none" color="light">
+        <ion-input type="text" formControlName="city"></ion-input>
+      </ion-item>
+
+      <ion-label position="stacked" color="medium">
+        <span>{{ 'ZIPCODE' | translate }}</span>
+      </ion-label>
+      <ion-item class="ion-margin-vertical" lines="none" color="light">
+        <ion-input type="text" formControlName="zipcode"></ion-input>
+      </ion-item>
+
+      <ion-label position="stacked" color="medium">
+        <span>{{ 'SHIPPING_ADDRESS' | translate }}</span>
+      </ion-label>
+      <ion-item class="ion-margin-vertical" lines="none" color="light">
+        <ion-textarea rows="4" formControlName="address"></ion-textarea>
+      </ion-item>
+
+      <ion-label position="stacked" color="medium">
+        <span>{{ 'CONTACT_NAME' | translate }}</span>
+      </ion-label>
+      <ion-item class="ion-margin-vertical" lines="none" color="light">
+        <ion-input type="text" formControlName="name"></ion-input>
+      </ion-item>
+
+      <ion-label position="stacked" color="medium">
+        <span>{{ 'CONTACT_PHONE' | translate }}</span>
+      </ion-label>
+      <ion-item class="ion-margin-vertical" lines="none" color="light">
+        <ion-input type="tel" formControlName="phone"></ion-input>
+      </ion-item>
+
+      <ion-item class="ion-margin-vertical" lines="none">
+        <ion-label>
+          <span class="text-medium">
+            {{ 'SET_AS_DEFAULT' | translate }}
+          </span>
+        </ion-label>
+        <ion-checkbox slot="start" formControlName="isDefault"></ion-checkbox>
+      </ion-item>
+
+      <div>
+        <ion-button type="submit" shape="round" color="primary" strong>
+          {{ 'SAVE' | translate }}
+        </ion-button>
+      </div>
+
+    </ion-list>
+  </form>
+</ion-content>

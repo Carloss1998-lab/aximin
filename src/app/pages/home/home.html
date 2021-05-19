@@ -1,0 +1,404 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <div slot="start" class="hide-xs-only show-sm-up">
+      <div class="logo">
+        <img src="./assets/imgs/icon.png" />
+        <h2>{{ 'APP_NAME' | translate }}</h2>
+      </div>
+    </div>
+
+    <div>
+      <ion-searchbar mode="ios" showCancelButton="never" (ionBlur)="onBlurSearchInput()" (ionClear)="onClearSearch()"
+        (ionInput)="onSearch($event)" (keyup)="onSubmitSearch($event)" [placeholder]="'SEARCH_PLACEHOLDER' | translate">
+      </ion-searchbar>
+    </div>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #container scrollEvents="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Autocomplete -->
+
+  <div slot="fixed" style="left: 16px; right: 16px">
+    <ion-grid class="relative" fixed *ngIf="suggestions.length">
+      <ion-list lines="none" no-margin class="shadow autocomplete" [@staggerIn]="suggestions.length">
+        <ion-item class="hover" button detail="false" style="--min-height: 70px;"
+          *ngFor="let suggestion of suggestions;trackBy:trackByFn"
+          [routerLink]="['./items/' + suggestion.slug]">
+          <ion-label>
+            <ion-text color="dark">
+              <span class="link bold text-medium">
+                {{ suggestion.name }}
+              </span>
+            </ion-text>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-grid>
+  </div>
+
+  <ion-grid class="ion-no-padding" fixed>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" icon="alert-circle-outline" [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <div *ngIf="isContentViewVisible">
+
+      <div *ngFor="let block of layout.blocks">
+
+        <!-- Top Slide List -->
+
+        <div *ngIf="block.type === 'slider_images'">
+          
+          <div class="ion-padding-vertical">
+            <ion-slides #mainSlider (ionSlidesDidLoad)="onSlidesDidLoad()" (ionSlideWillChange)="onSlidesDidChange()"
+              [options]="slidesConfig">
+              <ion-slide *ngFor="let slide of slides;trackBy:trackByFn">
+                <div class="ion-activatable full-width" (click)="onSlideTouched(slide)">
+                  <div class="slide-img" [ngStyle]="{'background-image': 'url(' + slide.image?.url() + ')'}">
+                    <ion-ripple-effect type="bounded"></ion-ripple-effect>
+                  </div>
+                </div>
+              </ion-slide>
+            </ion-slides>
+          </div>
+        </div>
+
+        <!-- Category List -->
+
+        <div *ngIf="categories.length && block.type === 'categories'">
+          <ion-row class="ion-padding ion-align-items-center">
+            <ion-col>
+              <h3 class="ion-no-margin">
+                {{ 'CATEGORIES' | translate }}
+              </h3>
+            </ion-col>
+            <ion-col class="ion-text-end">
+              <ion-button class="bold no-shadow ion-text-capitalize" round color="medium"
+                [routerLink]="['./categories']">
+                {{ 'VIEW_ALL' | translate }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="ion-padding" [@staggerIn]="categories.length">
+            <ion-col class="ion-text-center" size-xs="3" *ngFor="let category of categories;trackBy:trackByFn"
+              (click)="onCategoryTouched(category)">
+              <div class="circle bg-img" defaultImage="./assets/imgs/placeholder.png" [offset]="300"
+                [lazyLoad]="category.imageThumb?.url()" [customObservable]="loadAndScroll"></div>
+              <ion-text color="dark">
+                <p class="link">
+                  {{ category.name }}
+                </p>
+              </ion-text>
+            </ion-col>
+          </ion-row>
+        </div>
+
+        <!-- Brand List -->
+
+        <div *ngIf="brands.length && block.type === 'brands'">
+
+          <ion-row class="ion-padding ion-align-items-center">
+            <ion-col>
+              <h3 class="ion-no-margin">
+                {{ 'BRANDS' | translate }}
+              </h3>
+            </ion-col>
+            <ion-col class="ion-text-end">
+              <ion-button class="bold no-shadow ion-text-capitalize" round color="medium" [routerLink]="['./brands']">
+                {{ 'VIEW_ALL' | translate }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-slides class="show-xs-only show-sm-only hide-md-up ion-margin-vertical"
+            (ionSlidesDidLoad)="onSlidesBrandsLoaded()" (ionSlideWillChange)="onSlidesBrandsChange()"
+            [options]="slidesBrandsConfig">
+            <ion-slide *ngFor="let brand of brands;trackBy:trackByFn">
+              <div class="full-width" [routerLink]="['./items']" [queryParams]="{ brand: brand.id }">
+                <div class="brand-img" [style.background-image]="'url(' + brand.image?.url() + ')'"></div>
+                <ion-text color="dark">
+                  <p class="link text-normal">
+                    {{ brand.name }}
+                  </p>
+                </ion-text>
+              </div>
+            </ion-slide>
+          </ion-slides>
+
+          <div class="hide-xs-only hide-sm-only show-md-up">
+            <ion-row class="ion-padding" [@staggerIn]="brands.length">
+              <ion-col class="ion-text-center" size-xs="4" size-md="3" *ngFor="let brand of brands;trackBy:trackByFn">
+                <div [routerLink]="['./items']" [queryParams]="{ brand: brand.id }">
+                  <div class="brand-img" defaultImage="./assets/imgs/placeholder.png" [offset]="300"
+                    [lazyLoad]="brand.image?.url()" [customObservable]="loadAndScroll"></div>
+                  <ion-text color="dark">
+                    <p class="link text-normal">
+                      {{ brand.name }}
+                    </p>
+                  </ion-text>
+                </div>
+              </ion-col>
+            </ion-row>
+          </div>
+
+        </div>
+
+        <!-- On Sale -->
+
+        <section class="ion-margin-vertical" *ngIf="itemsOnSale.length && block.type === 'sale_items'">
+
+          <ion-row class="ion-align-items-center ion-padding-horizontal">
+            <ion-col size="6" class="ion-text-start">
+              <h3 class="ion-no-margin">
+                {{ 'ON_SALE' | translate }}
+              </h3>
+            </ion-col>
+            <ion-col size="6" class="ion-text-end">
+              <ion-button class="bold no-shadow ion-text-capitalize" round color="medium" [routerLink]="['./items']"
+                [queryParams]="{ sale:'1' }">
+                {{ 'VIEW_ALL' | translate }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <div class="ion-margin-vertical">
+
+            <ion-slides class="show-xs-only hide-sm-up ion-margin-vertical"
+              (ionSlideWillChange)="onSlidesItemsOnSaleChange()" (ionSlidesDidLoad)="onSlidesItemsOnSaleLoaded()"
+              [options]="slidesItemsConfig">
+              <ion-slide *ngFor="let item of itemsOnSale;trackBy:trackByFn">
+                <app-shop-item [item]="item" [customObservable]="slidesItemsOnSaleObservable"
+                  [routerLink]="['./items/' + item.slug]"></app-shop-item>
+              </ion-slide>
+            </ion-slides>
+
+            <div class="ion-padding hide-xs-only show-sm-up">
+              <ion-row>
+                <ion-col size-sm="4" size-md="3" *ngFor="let item of itemsOnSale;trackBy:trackByFn">
+                  <app-shop-item [item]="item" [customObservable]="loadAndScroll"
+                    [routerLink]="['./items/' + item.slug]">
+                  </app-shop-item>
+                </ion-col>
+              </ion-row>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- New Arrival -->
+
+        <section class="ion-margin-vertical" *ngIf="itemsNewArrival.length && block.type === 'new_arrival_items'">
+
+          <ion-row class="ion-align-items-center ion-padding-horizontal">
+            <ion-col size="6" class="ion-text-start">
+              <h3 class="ion-no-margin">
+                {{ 'NEW_ARRIVAL' | translate }}
+              </h3>
+            </ion-col>
+            <ion-col size="6" class="ion-text-end">
+              <ion-button class="bold no-shadow ion-text-capitalize" round color="medium" [routerLink]="['./items']"
+                [queryParams]="{ new:'1' }">
+                {{ 'VIEW_ALL' | translate }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <div class="ion-margin-vertical">
+
+            <ion-slides class="show-xs-only hide-sm-up ion-margin-vertical"
+              (ionSlideWillChange)="onSlidesItemsNewArrivalChange()"
+              (ionSlidesDidLoad)="onSlidesItemsNewArrivalLoaded()" [options]="slidesItemsConfig">
+              <ion-slide *ngFor="let item of itemsNewArrival;trackBy:trackByFn">
+                <app-shop-item [item]="item" [customObservable]="slidesItemsNewArrivalObservable"
+                  [routerLink]="['./items/' + item.slug]"></app-shop-item>
+              </ion-slide>
+            </ion-slides>
+
+            <div class="ion-padding hide-xs-only show-sm-up">
+              <ion-row>
+                <ion-col size-sm="4" size-md="3" *ngFor="let item of itemsNewArrival;trackBy:trackByFn">
+                  <app-shop-item [item]="item" [customObservable]="loadAndScroll"
+                    [routerLink]="['./items/' + item.slug]">
+                  </app-shop-item>
+                </ion-col>
+              </ion-row>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Featured -->
+
+        <section class="ion-margin-vertical" *ngIf="itemsFeatured.length && block.type === 'featured_items'">
+
+          <ion-row class="ion-align-items-center ion-padding-horizontal">
+            <ion-col size="6" class="ion-text-start">
+              <h3 class="ion-no-margin">
+                {{ 'FEATURED' | translate }}
+              </h3>
+            </ion-col>
+            <ion-col size="6" class="ion-text-end">
+              <ion-button class="bold no-shadow ion-text-capitalize" round color="medium" [routerLink]="['./items']"
+                [queryParams]="{ featured:'1' }">
+                {{ 'VIEW_ALL' | translate }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <div class="ion-margin-vertical">
+
+            <ion-slides class="show-xs-only hide-sm-up ion-margin-vertical"
+              (ionSlideWillChange)="onSlidesItemsFeaturedChange()" (ionSlidesDidLoad)="onSlidesItemsFeaturedLoaded()"
+              [options]="slidesItemsConfig">
+              <ion-slide *ngFor="let item of itemsFeatured;trackBy:trackByFn">
+                <app-shop-item [item]="item" [customObservable]="slidesItemsFeaturedObservable"
+                  [routerLink]="['./items/' + item.slug]"></app-shop-item>
+              </ion-slide>
+            </ion-slides>
+
+            <div class="ion-padding hide-xs-only show-sm-up">
+              <ion-row>
+                <ion-col size-sm="4" size-md="3" *ngFor="let item of itemsFeatured;trackBy:trackByFn">
+                  <app-shop-item [item]="item" [customObservable]="loadAndScroll"
+                    [routerLink]="['./items/' + item.slug]">
+                  </app-shop-item>
+                </ion-col>
+              </ion-row>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Latest items -->
+
+        <div *ngIf="block.type === 'all_items'">
+          <ion-row class="ion-align-items-center ion-padding-horizontal">
+            <ion-col size="6" class="ion-text-start">
+              <h3 class="ion-no-margin">
+                {{ 'ALL_ITEMS' | translate }}
+              </h3>
+            </ion-col>
+            <ion-col size="6" class="ion-text-end">
+              <ion-button class="bold no-shadow ion-text-capitalize" round color="medium" [routerLink]="['./items']">
+                {{ 'VIEW_ALL' | translate }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <div class="ion-padding-horizontal ion-margin-vertical">
+            <ion-row>
+              <ion-col size-xs="6" size-sm="4" size-md="3" *ngFor="let item of items">
+                <app-shop-item [item]="item" [customObservable]="loadAndScroll" [routerLink]="['./items/' + item.slug]">
+                </app-shop-item>
+              </ion-col>
+            </ion-row>
+          </div>
+
+          <ion-infinite-scroll (ionInfinite)="onLoadMore($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+
+        </div>
+
+        <!-- Random items -->
+
+        <div *ngIf="block.type === 'random_items'">
+          <ion-row class="ion-align-items-center ion-padding-horizontal">
+            <ion-col size="6" class="ion-text-start">
+              <h3 class="ion-no-margin">
+                {{ 'MORE_ITEMS' | translate }}
+              </h3>
+            </ion-col>
+            <ion-col size="6" class="ion-text-end">
+              <ion-button class="bold no-shadow ion-text-capitalize" round color="medium" [routerLink]="['./items']">
+                {{ 'VIEW_ALL' | translate }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <div class="ion-padding-horizontal ion-margin-vertical">
+            <ion-row>
+              <ion-col size-xs="6" size-sm="4" size-md="3" *ngFor="let item of itemsRandom">
+                <app-shop-item [item]="item" [customObservable]="loadAndScroll" [routerLink]="['./items/' + item.slug]">
+                </app-shop-item>
+              </ion-col>
+            </ion-row>
+          </div>
+
+          <ion-infinite-scroll (ionInfinite)="onLoadMoreRandom($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+
+      </div>
+
+    </div>
+
+    <section *ngIf="isLoadingViewVisible">
+      <div class="ion-padding">
+        <ngx-skeleton-loader count="1" [theme]="{ width: '100%', height: '250px', 'border-radius': '4px' }">
+        </ngx-skeleton-loader>
+      </div>
+
+      <div class="ion-padding-vertical">
+        <ion-row class="ion-nowrap ion-text-center">
+          <ion-col size-xs="3" *ngFor="let item of skeletonArray">
+            <ngx-skeleton-loader count="1" appearance="circle" [theme]="{ width: '60px', height: '60px' }">
+            </ngx-skeleton-loader>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-nowrap ion-text-center">
+          <ion-col size-xs="3" *ngFor="let item of skeletonArray">
+            <ngx-skeleton-loader count="1" appearance="circle" [theme]="{ width: '60px', height: '60px' }">
+            </ngx-skeleton-loader>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <ion-row class="ion-nowrap ion-margin-top">
+        <ion-col class="ion-text-center" size-xs="6" size-sm="6" size-md="6" size-lg="3"
+          *ngFor="let item of skeletonArray">
+          <ngx-skeleton-loader count="1" appearance="circle"
+            [theme]="{ width: '100%', height: '230px', 'border-radius': '4px', margin: '0' }">
+          </ngx-skeleton-loader>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-nowrap">
+        <ion-col class="ion-text-center" size-xs="6" size-sm="6" size-md="6" size-lg="3"
+          *ngFor="let item of skeletonArray">
+          <ngx-skeleton-loader count="1" appearance="circle"
+            [theme]="{ width: '100%', height: '230px', 'border-radius': '4px', margin: '0' }">
+          </ngx-skeleton-loader>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-nowrap">
+        <ion-col class="ion-text-center" size-xs="6" size-sm="6" size-md="6" size-lg="3"
+          *ngFor="let item of skeletonArray">
+          <ngx-skeleton-loader count="1" appearance="circle"
+            [theme]="{ width: '100%', height: '230px', 'border-radius': '4px', margin: '0' }">
+          </ngx-skeleton-loader>
+        </ion-col>
+      </ion-row>
+    </section>
+
+  </ion-grid>
+
+</ion-content>

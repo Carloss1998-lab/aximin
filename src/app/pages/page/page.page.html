@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ page?.title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isEmptyViewVisible" icon="alert-circle-outline" [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_NETWORK' | translate">
+    </empty-view>
+
+    <ion-row class="ion-justify-content-center">
+      <ion-col size-xs="12" size-lg="8">
+
+        <div *ngIf="isLoadingViewVisible">
+          <ngx-skeleton-loader count="1" appearance="circle"
+            [theme]="{ 'border-radius': '0', margin: '0 0 16px', height: '250px', width: '100%' }">
+          </ngx-skeleton-loader>
+          <ngx-skeleton-loader count="16" [theme]="{ 'border-radius': '0', height: '10px' }">
+          </ngx-skeleton-loader>
+        </div>
+
+        <div *ngIf="isContentViewVisible">
+
+          <div class="ion-margin-top">
+            <h3 class="bold">{{ page?.title }}</h3>
+            <div class="html-content" *ngIf="content" (click)="onContentTouched($event)" [innerHTML]="content">
+            </div>
+          </div>
+        </div>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

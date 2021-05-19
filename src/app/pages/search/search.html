@@ -1,0 +1,54 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar mode="ios" showCancelButton="never" [placeholder]="'SEARCH_PLACEHOLDER' | translate"
+      [value]="searchTerm" (keyup)="onSearch($event)">
+    </ion-searchbar>
+    <ion-buttons slot="end" *ngIf="preference.cartCount">
+      <ion-button fill="clear" (click)="goToCartPage()">
+        <ion-icon slot="start" name="cart"></ion-icon>
+        <span>{{ preference.cartCount }}</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content scrollEvents="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" image="./assets/imgs/undraw_search.svg" imageWidth="100"
+      [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+    
+    <ion-list [@staggerIn]="items.length" *ngIf="isContentViewVisible">
+      <ion-row>
+        <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3" *ngFor="let item of items;trackBy:trackByFn">
+          <app-shop-item [item]="item" [customObservable]="loadAndScroll" [routerLink]="['/1/home/items/' + item.slug]">
+          </app-shop-item>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+    <ion-row *ngIf="isLoadingViewVisible">
+      <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3" *ngFor="let item of skeletonArray">
+        <ngx-skeleton-loader count="1" appearance="circle"
+          [theme]="{ width: '100%', height: '240px', 'border-radius': '0' }">
+        </ngx-skeleton-loader>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

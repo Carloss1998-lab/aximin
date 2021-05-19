@@ -1,0 +1,109 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" fixed></ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid fixed>
+
+    <ion-row class="ion-justify-content-center">
+      <ion-col class="ion-no-padding" size-xs="12" size-sm size-md size-lg="8">
+
+        <div>
+          <section class="heading">
+            <ion-avatar>
+              <img src-fallback="./assets/imgs/avatar.png" [src]="user?.photo?.url()" />
+            </ion-avatar>
+            <ion-text color="light">
+              <h3>{{ user?.name }}</h3>
+              <h3 *ngIf="isGuest">
+                {{ 'GUEST' | translate }}
+              </h3>
+            </ion-text>
+
+            <div style="width: 150px;">
+              <ion-button class="ion-margin-top" size="small" expand="block" color="light" (click)="onPresentSignUpModal()"
+              *ngIf="isGuest">
+              {{ 'SIGN_UP' | translate }}
+            </ion-button>
+
+            <ion-button class="ion-margin-top" size="small" expand="block" color="light" (click)="onPresentSignInModal()"
+              *ngIf="!user || isGuest">
+              {{ 'LOGIN' | translate }}
+            </ion-button>
+            </div>
+
+          </section>
+
+          <ion-list class="ion-no-padding">
+            <ion-item color="light" (click)="goTo('orders')">
+              <ion-icon name="list" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'MY_ORDERS' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+            <ion-item color="light" (click)="goTo('payment')">
+              <ion-icon name="card" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'PAYMENT' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+            <ion-item color="light" (click)="goTo('addresses')">
+              <ion-icon name="pin" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'ADDRESSES' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+            <ion-item color="light" (click)="goTo('favorites')">
+              <ion-icon name="heart" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'FAVORITES' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+            <ion-item color="light" (click)="onPresentChangePasswordModal()" *ngIf="user && !user.authData">
+              <ion-icon name="lock-closed" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'CHANGE_PASSWORD' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+            <ion-item color="light" (click)="onPresentEditModal()" *ngIf="user && !isGuest">
+              <ion-icon name="create" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'EDIT_PROFILE' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+            <ion-item color="light" (click)="onPresentSettingsModal()">
+              <ion-icon name="cog" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'SETTINGS' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+            <ion-item lines="none" color="light" (click)="goTo('help')">
+              <ion-icon name="help-buoy" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'HELP' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+            <ion-item lines="none" color="light" (click)="onLogout()" *ngIf="user && !isGuest">
+              <ion-icon name="log-out" slot="start" color="primary"></ion-icon>
+              <ion-label>
+                <p class="link text-large">{{ 'LOGOUT' | translate }}</p>
+              </ion-label>
+              <ion-icon name="chevron-forward" slot="end" color="dark"></ion-icon>
+            </ion-item>
+          </ion-list>
+
+        </div>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

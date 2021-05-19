@@ -1,0 +1,29 @@
+ion-content {
+  --background: var(--ion-color-light);
+}
+
+ion-grid {
+  background: #fff;
+}
+
+ion-searchbar {
+  padding: 0 8px !important;
+}
+
+ion-buttons {
+  align-self: center;
+}
+
+.custom-select {
+  ion-item {
+    display: inline-block;
+
+    ion-label {
+      margin-top: 8px;
+    }
+
+    ion-select {
+      max-width: 100%
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<ion-card button [style.box-shadow]="styles?.boxShadow" [style.border-radius]="styles?.radius"
+  [style.border]="styles?.border" [style.margin]="styles?.margin" class="full-width ion-no-margin">
+
+  <div [style.padding]="styles?.padding" class="image-container">
+    <div class="bg-img" [offset]="300" defaultImage="./assets/imgs/placeholder.png"
+      [lazyLoad]="item.featuredImageThumb?.url()" [customObservable]="scrollObservable"></div>
+    <span *ngIf="item.salePrice">
+      {{ item.discount | percent }} {{ 'OFF' | translate }}
+    </span>
+  </div>
+
+  <ion-card-content class="ion-text-center">
+
+    <ion-text color="dark">
+      <p class="link ellipsis text-medium">{{ item.name }}</p>
+    </ion-text>
+
+    <bar-rating [rate]="item.ratingAvg" [readOnly]="true" [max]="5" [theme]="'stars'"></bar-rating>
+
+    <ion-text color="dark">
+      <p class="ion-no-margin" *ngIf="item.salePrice">
+        <span class="bold">{{ item.salePrice | currencyGlobal }}&nbsp;</span>
+        <small>
+          <ion-text color="medium">
+            <s class="bold">
+              {{ item.price | currencyGlobal }}
+            </s>
+          </ion-text>
+        </small>
+      </p>
+      <p class="bold ion-no-margin" *ngIf="!item.salePrice">
+        {{ item.price | currencyGlobal }}
+      </p>
+    </ion-text>
+
+  </ion-card-content>
+</ion-card>

@@ -1,0 +1,259 @@
+<ion-header class="ion-no-border">
+
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'CHECKOUT' | translate }}</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" image="./assets/imgs/undraw_add_to_cart_vkjp.svg" imageWidth="120"
+      [text]="'CART_EMPTY' | translate">
+    </empty-view>
+
+    <form [formGroup]="form" #ngForm="ngForm" (ngSubmit)="onPlaceOrder()" novalidate *ngIf="isContentViewVisible">
+
+      <ion-row *ngIf="isContentViewVisible">
+        <ion-col size-xs="12" size-lg="7">
+
+          <div class="alert alert-warning" *ngIf="minimumOrderAmount && cart?.subtotal < minimumOrderAmount">
+            {{ 'ERROR_MINIMUM_ORDER_AMOUNT' | translate: { value: (minimumOrderAmount | currencyGlobal) } }}
+          </div>
+
+          <div class="alert alert-warning" *ngIf="maximumOrderAmount && cart?.subtotal > maximumOrderAmount">
+            {{ 'ERROR_MAXIMUM_ORDER_AMOUNT' | translate: { value: (maximumOrderAmount | currencyGlobal) } }}
+          </div>
+
+          <ion-item-group class="ion-margin-vertical">
+            <ion-list-header class="ion-margin-bottom bold">
+              <h5>{{ 'CONTACT_INFO' | translate }}</h5>
+            </ion-list-header>
+            <ion-item class="text-medium item-input ion-margin-horizontal" lines="none">
+              <ion-input type="email" formControlName="contactEmail" [placeholder]="'CONTACT_EMAIL' | translate">
+              </ion-input>
+            </ion-item>
+          </ion-item-group>
+
+          <ion-item-group class="ion-margin-vertical">
+            <ion-list-header class="ion-margin-bottom bold">
+              <h5>{{ 'PAYMENT' | translate }}</h5>
+            </ion-list-header>
+            <ion-list lines="none" class="ion-no-padding ion-no-margin">
+
+              <p class="text-medium ion-padding-horizontal ion-no-margin" *ngIf="!isCardEnabled && !isCodEnabled">
+                {{ 'PAYMENT_METHOD_NOT_FOUND' | translate }}
+              </p>
+
+              <ion-radio-group mode="md" (ionChange)="onChangePaymentMethod($event)" formControlName="paymentMethod">
+                <ion-item *ngIf="isCodEnabled">
+                  <ion-label>
+                    <p>{{ 'CASH' | translate }}</p>
+                  </ion-label>
+                  <ion-radio value="Cash"></ion-radio>
+                </ion-item>
+                <ion-item lines="none" *ngIf="isCardEnabled">
+                  <ion-label>
+                    <p>{{ 'CREDIT_DEBIT_CARD' | translate }}</p>
+                  </ion-label>
+                  <ion-radio value="Card"></ion-radio>
+                </ion-item>
+              </ion-radio-group>
+            </ion-list>
+
+            <ion-list [hidden]="paymentMethodField.value !== 'Card'">
+              <ion-radio-group mode="md" formControlName="card">
+                <ion-item *ngFor="let card of cards">
+                  <ion-label class="flex align-items-center">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<img src="./assets/imgs/{{card.formatBrand()}}.png" width="30" />
+                    &nbsp;&nbsp;<span class="text-medium" [innerHTML]="card"></span>
+                  </ion-label>
+                  <ion-radio [value]="card" color="dark"></ion-radio>
+                </ion-item>
+                <ion-item>
+                  <ion-button strong type="button" class="ion-text-capitalize" size="small"
+                    (click)="onPresentCardAddModal()">
+                    {{ 'ADD_CARD' | translate }}
+                  </ion-button>
+                </ion-item>
+              </ion-radio-group>
+            </ion-list>
+
+          </ion-item-group>
+
+          <ion-list-header class="ion-margin-bottom bold">
+            <h5>{{ 'SHIPPING' | translate }}</h5>
+          </ion-list-header>
+
+          <ion-list class="ion-no-padding">
+            <ion-radio-group mode="md" formControlName="shipping" (ionChange)="onChangeAddress()">
+              <ion-item *ngFor="let address of addresses">
+                <ion-label>
+                  <p>
+                    <ion-text color="dark">
+                      {{ address }}
+                    </ion-text>
+                  </p>
+                  <p class="text-small">
+                    {{ 'CONTACT_PHONE' | translate }}: {{ address.phone }}
+                  </p>
+                </ion-label>
+                <ion-radio [value]="address" color="dark"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-button strong type="button" class="ion-text-capitalize" size="small"
+                  (click)="onPresentAddressAddModal()">
+                  {{ 'ADD_NEW_ADDRESS' | translate }}
+                </ion-button>
+              </ion-item>
+            </ion-radio-group>
+          </ion-list>
+
+        </ion-col>
+        <ion-col size-xs="12" size-lg="5">
+
+          <ion-list-header class="bold ion-margin-top">
+            <h5>{{ 'ORDER_SUMMARY' | translate }}</h5>
+          </ion-list-header>
+
+          <div class="bg-light radius ion-padding ion-margin-top">
+
+            <ion-item-group class="ion-margin-vertical">
+
+              <ion-item style="--padding-start:0" color="light" [lines]="last ? 'none' : 'full'"
+                *ngFor="let item of cart?.items; let last = last">
+                <ion-thumbnail slot="start" *ngIf="item.featuredImageThumb">
+                  <img src-fallback="./assets/imgs/placeholder.png" [src]="item.featuredImageThumb?.url()" />
+                </ion-thumbnail>
+                <ion-row class="full-width">
+                  <ion-col>
+                    <ion-label>
+                      <p class="text-normal ellipsis mb-8">
+                        {{ item.qty }} x {{ item.name }}
+                      </p>
+                      <p *ngIf="item.variation">
+                        <span class="bold">{{ 'VARIANT' | translate }}:</span> {{ item.variation.name }}
+                      </p>
+                    </ion-label>
+                  </ion-col>
+                </ion-row>
+                <div slot="end">
+
+                  <p class="text-medium" *ngIf="item.hasOwnProperty('finalAmount'); else showOnlyAmount">
+                    <span *ngIf="item.amount > item.finalAmount">
+                      <ion-text color="medium">
+                        <s class="text-small">
+                          {{ item.amount | currencyGlobal }}
+                        </s>
+                      </ion-text>
+                      <br />
+                      <span>
+                        {{ item.finalAmount | currencyGlobal }}
+                      </span>
+                    </span>
+                    <span *ngIf="item.amount <= item.finalAmount">
+                      <span>{{ item.finalAmount | currencyGlobal }}</span>
+                    </span>
+                  </p>
+
+                  <ng-template #showOnlyAmount>
+                    <p class="text-medium">
+                      {{ item.amount | currencyGlobal }}
+                    </p>
+                  </ng-template>
+                  
+                </div>
+              </ion-item>
+
+            </ion-item-group>
+
+            <ion-list-header>
+              <ion-label>
+                <h5>{{ 'COUPON' | translate }}</h5>
+              </ion-label>
+            </ion-list-header>
+            <ion-item class="text-medium item-input ion-margin-horizontal" lines="none">
+              <ion-input type="text" formControlName="couponCode" [placeholder]="'COUPON_PLACEHOLDER' | translate">
+              </ion-input>
+            </ion-item>
+
+            <ion-button style="min-width: 140px;" (click)="onApplyCouponButtonTouched()"
+              class="ion-margin ion-text-capitalize" size="small" color="white"
+              [disabled]="isUpdatingCart || isCreatingOrder">
+              <span class="text-medium">{{ 'APPLY_COUPON' | translate }}</span>
+            </ion-button>
+
+            <ion-item color="light" *ngIf="cart?.coupon" [class.opacity-medium]="isUpdatingCart">
+              <ion-label>
+                {{ 'COUPON' | translate }}: {{ cart?.coupon?.name }}
+              </ion-label>
+              <ion-button slot="end" (click)="onRemoveCoupon()" fill="clear"
+                [disabled]="isUpdatingCart || isCreatingOrder">
+                <span class="ion-text-capitalize text-small">
+                  {{ 'REMOVE_COUPON' | translate }}
+                </span>
+              </ion-button>
+            </ion-item>
+
+            <ion-row [class.opacity-medium]="isUpdatingCart">
+              <ion-col class="ion-text-nowrap">
+                <p>{{ 'SUBTOTAL' | translate }}</p>
+                <p *ngIf="cart?.coupon">
+                  {{ 'COUPON_DISCOUNT' | translate }}
+                  ({{ cart?.coupon?.name }})
+                </p>
+                <p>{{ 'SHIPPING_FEE' | translate }}</p>
+                <p>{{ 'TOTAL' | translate }}</p>
+              </ion-col>
+              <ion-col class="ion-text-end">
+                <p>{{ cart?.subtotal | currencyGlobal }}</p>
+                <p *ngIf="cart?.coupon">
+                  {{ -cart?.coupon?.amount | currencyGlobal }}
+                </p>
+                <p>{{ cart?.shippingFee | currencyGlobal }}</p>
+                <p>{{ cart?.total | currencyGlobal }}</p>
+              </ion-col>
+            </ion-row>
+            <div class="ion-text-center">
+              <ion-button type="submit" class="ion-text-uppercase" strong shape="round" color="primary"
+                [disabled]="isUpdatingCart || isCreatingOrder">
+                <ion-spinner color="light" *ngIf="isCreatingOrder"></ion-spinner>
+                <span *ngIf="!isCreatingOrder">{{ 'PLACE_ORDER' | translate }}</span>
+              </ion-button>
+              <p><small>{{ 'TRANSACTION_NOTICE' | translate }}</small></p>
+              <img src="./assets/imgs/mastercard.png" width="40" />
+              <img src="./assets/imgs/visa.png" width="40" />
+              <img src="./assets/imgs/american_express.png" width="40" />
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+
+    </form>
+
+    <ion-row class="ion-margin" *ngIf="isLoadingViewVisible">
+      <ion-col size-xs="12" size-lg="8">
+        <ngx-skeleton-loader count="1" [theme]="{ 'border-radius': '0', height: '120px', width: '100%' }">
+        </ngx-skeleton-loader>
+        <ngx-skeleton-loader count="1" [theme]="{ 'border-radius': '0', height: '120px', width: '100%' }">
+        </ngx-skeleton-loader>
+        <ngx-skeleton-loader count="1" [theme]="{ 'border-radius': '0', height: '240px', width: '100%' }">
+        </ngx-skeleton-loader>
+      </ion-col>
+      <ion-col size-xs="12" size-lg="4">
+        <ngx-skeleton-loader count="1" [theme]="{ 'border-radius': '0', height: '270px', width: '100%' }">
+        </ngx-skeleton-loader>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

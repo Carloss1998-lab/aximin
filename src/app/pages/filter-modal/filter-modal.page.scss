@@ -1,0 +1,22 @@
+ion-content {
+  --background: var(--ion-color-light);
+}
+
+ion-list {
+  background: transparent;
+
+  ion-item {
+    --background: var(--ion-item-light);
+    --detail-icon-color: var(--ion-color-dark);
+
+    &.selected {
+      --background: var(--ion-color-light-shade);
+    }
+  }
+}
+
+ion-footer {
+  ion-button {
+    min-width: 200px;
+  }
+}

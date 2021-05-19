@@ -1,0 +1,80 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #container scrollEvents="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid fixed>
+
+    <div class="ion-text-center" *ngIf="isLoadingViewVisible">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" icon="alert-circle-outline" [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <div *ngIf="isContentViewVisible && !layout?.enabled">
+      <ion-row class="ion-padding ion-align-items-center">
+        <ion-col>
+          <h3 class="ion-no-margin">
+            {{ 'BRANDS' | translate }}
+          </h3>
+        </ion-col>
+        <ion-col class="ion-text-end">
+          <ion-button strong class="no-shadow ion-text-capitalize" shape="round" color="medium"
+            [routerLink]="['../items']">
+            {{ 'VIEW_ALL' | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="isContentViewVisible" [@staggerIn]="brands.length">
+        <ion-col size-xs="4" size-md="3" class="ion-text-center" *ngFor="let brand of brands;trackBy:trackByFn">
+          <div [routerLink]="['../items']" [queryParams]="{ brand: brand.id }">
+            <div class="default-bg-img" defaultImage="./assets/imgs/placeholder.png" [customObservable]="loadAndScroll"
+              [lazyLoad]="brand.image?.url()">
+            </div>
+            <p class="link ellipsis">
+              {{ brand.name }}
+            </p>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+
+    <ion-row *ngIf="isContentViewVisible && layout?.enabled" [@staggerIn]="brands.length">
+      <ion-col [attr.size-xs]="12 / layout?.item?.columnsXs" [attr.size-md]="12 / layout?.item?.columnsMd"
+        [attr.size-lg]="12 / layout?.item?.columnsLg" *ngFor="let brand of brands;trackBy:trackByFn">
+        <div class="ion-activatable full-width" [routerLink]="['../items']" [queryParams]="{ brand: brand.id }">
+          <div class="card" [style.box-shadow]="layout?.item?.boxShadow" [style.margin]="layout?.item?.margin"
+            [style.height]="layout?.item?.height" [style.border-radius]="layout?.item?.radius">
+            <div class="bg-img" defaultImage="./assets/imgs/placeholder.png" [lazyLoad]="brand.image?.url()"
+              [customObservable]="loadAndScroll">
+            </div>
+            <div class="content">
+              <ion-text color="light" *ngIf="!layout?.item?.hideTitle">
+                <h5 class="bold link" [style.font-size]="layout?.item?.fontSize">
+                  {{ brand.name }}
+                </h5>
+              </ion-text>
+            </div>
+          </div>
+          <ion-ripple-effect type="bounded"></ion-ripple-effect>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

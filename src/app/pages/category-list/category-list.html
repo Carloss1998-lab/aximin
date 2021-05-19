@@ -1,0 +1,96 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <div>
+      <ion-searchbar mode="ios" [placeholder]="'SEARCH_PLACEHOLDER' | translate" (ionClear)="onClearSearch()"
+        (ionChange)="onSearch($event)">
+      </ion-searchbar>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content scrollEvents="true" #container>
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div slot="fixed" style="left: 16px; right: 16px">
+    <ion-grid class="relative" fixed *ngIf="suggestions.length">
+      <ion-list lines="none" class="ion-no-margin" class="shadow autocomplete" *ngIf="suggestions.length"
+        [@staggerIn]="suggestions.length">
+        <ion-item class="hover" button detail="false" style="--min-height: 70px;" *ngFor="let suggestion of suggestions"
+          (click)="onSuggestionTouched(suggestion)">
+          <ion-label>
+            <ion-text color="dark">
+              <span class="link bold text-medium">
+                {{ suggestion.name }}
+              </span>
+            </ion-text>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-grid>
+  </div>
+
+  <ion-grid fixed>
+
+    <div class="ion-text-center" *ngIf="isLoadingViewVisible">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" icon="alert-circle-outline" [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <ion-row *ngIf="isContentViewVisible && !layout?.enabled" class="ion-margin-vertical" [@staggerIn]="categories.length">
+      <ion-col size-xs="3" class="ion-text-center">
+        <div class="circle dark-bg" (click)="onViewAll()">
+          <div class="circle-inner">
+            <p class="bold link">{{ 'VIEW_ALL' | translate }}</p>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col size-xs="3" class="ion-text-center" (click)="goToSubCategoryPage(category)"
+        *ngFor="let category of categories;trackBy:trackByFn">
+        <div class="circle bg-img" defaultImage="./assets/imgs/placeholder.png" [lazyLoad]="category.imageThumb?.url()"
+          [customObservable]="loadAndScroll"></div>
+        <ion-text color="dark">
+          <p class="link margin-6 text-medium">
+            {{ category.name }}
+          </p>
+        </ion-text>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="isContentViewVisible && layout?.enabled" class="ion-margin-vertical ion-padding" [@staggerIn]="categories.length">
+      <ion-col [attr.size-xs]="12 / layout?.item?.columnsXs" [attr.size-md]="12 / layout?.item?.columnsMd"
+        [attr.size-lg]="12 / layout?.item?.columnsLg" *ngFor="let category of categories;trackBy:trackByFn">
+        <div class="ion-activatable full-width" (click)="goToSubCategoryPage(category)">
+          <div class="card" [style.box-shadow]="layout?.item?.boxShadow" [style.margin]="layout?.item?.margin"
+            [style.height]="layout?.item?.height" [style.border-radius]="layout?.item?.radius">
+            <div class="bg-img" defaultImage="./assets/imgs/placeholder.png" [lazyLoad]="category.image?.url()"
+              [customObservable]="loadAndScroll">
+            </div>
+            <div class="content">
+              <ion-text color="light" *ngIf="!layout?.item?.hideTitle">
+                <h5 class="bold link" [style.font-size]="layout?.item?.fontSize">
+                  {{ category.name }}
+                </h5>
+              </ion-text>
+            </div>
+          </div>
+          <ion-ripple-effect type="bounded"></ion-ripple-effect>
+        </div>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

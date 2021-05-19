@@ -1,0 +1,104 @@
+<ion-header class="ion-no-border">
+
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'MY_ORDERS' | translate }}</ion-title>
+    <ion-buttons slot="end" *ngIf="preference.cartCount">
+      <ion-button fill="clear" (click)="goToCartPage()">
+        <ion-icon slot="start" name="cart"></ion-icon>
+        <span> {{ preference.cartCount }} </span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content #container scrollEvents="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" image="./assets/imgs/undraw_no_data_qbuo.svg" imageWidth="120"
+      [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <ion-row class="ion-justify-content-center" *ngIf="isContentViewVisible">
+      <ion-col size-xs="12" size-lg="10">
+        <ion-list lines="none">
+          <ion-list-header>
+            <h5>{{ 'LAST_ORDERS' | translate }}</h5>
+          </ion-list-header>
+          <ion-item class="radius ion-margin-vertical" color="light" *ngFor="let order of orders;trackBy:trackByFn"
+            detail="false" [routerLink]="['./' + order.id]">
+
+            <ion-thumbnail slot="start">
+              <img src="./assets/imgs/placeholder.png" [lazyLoad]="order.firstItem.featuredImageThumb?.url()"
+                [customObservable]="loadAndScroll" />
+            </ion-thumbnail>
+
+            <div class="full-width">
+
+              <ion-row class="ion-align-items-center">
+                <ion-col size-xs="12" size-md="9">
+
+                  <ion-label class="ion-text-wrap">
+                    <p class="link ellipsis text-normal">
+                      {{ order.prettyItems() }}
+                    </p>
+
+                    <ion-text color="primary">
+                      <p class="bold">
+                        <span *ngIf="order.status === 'Unpaid'">{{ 'UNPAID' | translate }}</span>
+                        <span *ngIf="order.status === 'Paid'">{{ 'PAID' | translate }}</span>
+                        <span *ngIf="order.status === 'Pending'">{{ 'PENDING' | translate }}</span>
+                        <span *ngIf="order.status === 'In Process'">{{ 'IN_PROCESS' | translate }}</span>
+                        <span *ngIf="order.status === 'Packed'">{{ 'PACKED' | translate }}</span>
+                        <span *ngIf="order.status === 'Shipped Out'">{{ 'SHIPPED_OUT' | translate }}</span>
+                        <span *ngIf="order.status === 'Delivered'">{{ 'DELIVERED' | translate }}</span>
+                        <span *ngIf="order.status === 'Cancelled'">{{ 'CANCELLED' | translate }}</span>
+                      </p>
+                    </ion-text>
+
+                    <p class="text-small">
+                      {{ order.createdAt | dateGlobal: 'mediumDate' }}
+                    </p>
+                  </ion-label>
+                </ion-col>
+
+                <ion-col size-xs="12" size-md="3">
+                  <ion-button shape="round" color="dark">
+                    {{ 'VIEW' | translate }}
+                    <ion-icon slot="end" name="chevron-forward"></ion-icon>
+                  </ion-button>
+                </ion-col>
+
+              </ion-row>
+
+            </div>
+
+          </ion-item>
+
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-margin-vertical ion-justify-content-center" *ngIf="isLoadingViewVisible">
+      <ion-col size-xs="12" size-lg="10">
+        <ngx-skeleton-loader count="12" [theme]="{ 'border-radius': '0', height: '100px' }">
+        </ngx-skeleton-loader>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

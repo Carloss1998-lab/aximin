@@ -1,0 +1,94 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed></ion-toolbar>
+</ion-header>
+
+<ion-content #container scrollEvents="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" image="./assets/imgs/undraw_add_to_cart_vkjp.svg" imageWidth="120"
+      [text]="'CART_EMPTY' | translate">
+    </empty-view>
+
+    <ion-row *ngIf="isContentViewVisible">
+      <ion-col size-xs="12" size-lg="8">
+        <ion-list lines="none" inset class="ion-no-padding">
+          <ion-item class="radius ion-margin-bottom" color="light" (click)="onItemTouched(item)"
+            *ngFor="let item of cart?.items;let last = last">
+            <ion-thumbnail slot="start" *ngIf="item.featuredImageThumb">
+              <img src="./assets/imgs/placeholder.png" [lazyLoad]="item.featuredImageThumb?.url()"
+                [customObservable]="loadAndScroll" />
+            </ion-thumbnail>
+
+            <ion-row class="full-width ion-align-items-center">
+              <ion-col size-xs="12" size-md="9">
+                <ion-label class="ion-text-wrap">
+                  <p class="link text-normal ellipsis mb-8">{{ item.name }}</p>
+                  <p *ngIf="item.variation">
+                    <span class="bold">{{ 'VARIANT' | translate }}:</span> {{ item.variation.name }}
+                  </p>
+                  <p class="bold">
+                    {{ item.amount | currencyGlobal }}
+                  </p>
+                </ion-label>
+              </ion-col>
+              <ion-col size-xs="12" size-md="3">
+                <div class="flex align-items-center">
+                  <ion-button fill="clear" style="--padding-start:0"
+                    (click)="decrementQuantity(item); $event.stopPropagation()">
+                    <ion-icon name="remove-circle-outline" slot="icon-only" color="dark"></ion-icon>
+                  </ion-button>
+                  <span class="label-quantity">{{ item.qty }}</span>
+                  <ion-button fill="clear" (click)="incrementQuantity(item); $event.stopPropagation()">
+                    <ion-icon name="add-circle-outline" slot="icon-only" color="dark"></ion-icon>
+                  </ion-button>
+                </div>
+              </ion-col>
+            </ion-row>
+
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col size-xs="12" size-lg="4">
+        <div class="bg-light radius ion-padding ion-margin">
+          <h5 class="bold ion-no-margin">{{ 'ORDER_SUMMARY' | translate }}</h5>
+          <div class="ion-text-center">
+            <p>{{ 'TOTAL' | translate }}: {{ subtotal | currencyGlobal }}</p>
+            <ion-button size="medium" shape="round" color="primary" strong
+              [disabled]="cart?.empty() || !cart || isSavingCart" (click)="goToCheckout()">
+              <ion-spinner color="light" *ngIf="isSavingCart"></ion-spinner>
+              <span *ngIf="!isSavingCart">{{ 'CHECKOUT' | translate }}</span>
+            </ion-button>
+            <p class="text-small">{{ 'TRANSACTION_NOTICE' | translate }}</p>
+            <img src="./assets/imgs/mastercard.png" width="40" />
+            <img src="./assets/imgs/visa.png" width="40" />
+            <img src="./assets/imgs/american_express.png" width="40" />
+          </div>
+        </div>
+
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-margin" *ngIf="isLoadingViewVisible">
+      <ion-col size-xs="12" size-lg="8">
+        <ngx-skeleton-loader count="6" [theme]="{ 'border-radius': '0', height: '60px' }">
+        </ngx-skeleton-loader>
+      </ion-col>
+      <ion-col size-xs="12" size-lg="4">
+        <ngx-skeleton-loader count="1" [theme]="{ 'border-radius': '0', height: '220px', width: '100%' }">
+        </ngx-skeleton-loader>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

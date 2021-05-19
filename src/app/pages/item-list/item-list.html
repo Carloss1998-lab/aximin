@@ -1,0 +1,103 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar mode="ios" [placeholder]="'SEARCH_PLACEHOLDER' | translate" (ionInput)="onSearch($event)"
+      (ionClear)="onClearSearch()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button color="dark" size="small" class="ion-text-uppercase" (click)="onPresentFilterModal()">
+        <ion-icon slot="start" name="funnel"></ion-icon>
+        <span class="text-small">{{ 'REFINE' | translate }}</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content #container scrollEvents="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}"></ion-refresher-content>
+  </ion-refresher>
+
+  <div slot="fixed" style="left: 16px; right: 16px">
+    <ion-grid class="relative" fixed *ngIf="suggestions.length">
+      <ion-list lines="none" class="ion-no-margin" class="shadow autocomplete" *ngIf="suggestions.length"
+        [@staggerIn]="suggestions.length">
+        <ion-item class="hover" button detail="false" style="--min-height: 70px;" *ngFor="let suggestion of suggestions;trackBy:trackByFn"
+          (click)="this.suggestions = [];" [routerLink]="['./' + suggestion.slug]">
+          <ion-label>
+            <ion-text color="dark">
+              <span class="link bold text-medium">
+                {{ suggestion.name }}
+              </span>
+            </ion-text>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-grid>
+  </div>
+
+  <ion-grid fixed>
+
+    <div class="ion-text-center" *ngIf="isLoadingViewVisible">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" image="./assets/imgs/undraw_search.svg" imageWidth="100"
+      [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <div class="custom-select ion-margin-vertical" *ngIf="isContentViewVisible">
+      <ion-item lines="none">
+        <ion-label>
+          <ion-text class="bold" color="medium">
+            {{ 'SORT_BY' | translate }}
+          </ion-text>
+        </ion-label>
+
+        <ion-select [(ngModel)]="selectedSortOption" (ionChange)="onSortOptionTouched($event)" [compareWith]="compareSortOption"
+          [interfaceOptions]="customPopoverOptions" interface="popover">
+          <ion-select-option [value]="option" *ngFor="let option of sortOptions">
+            {{ (option.sortByField + '_' + option.sortBy) | uppercase | translate }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <ion-list *ngIf="isContentViewVisible && !layout?.enabled" [@staggerIn]="items.length">
+      <ion-row>
+        <ion-col size-xs="6" size-sm="4" size-md="4" size-lg="3" *ngFor="let item of items;trackBy:trackByFn">
+          <app-shop-item [item]="item" [customObservable]="loadAndScroll"
+          (click)="onItemTouched(item)">
+          </app-shop-item>
+        </ion-col>
+      </ion-row>
+      <ion-infinite-scroll (ionInfinite)="onLoadMore($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-list>
+
+    <ion-list *ngIf="isContentViewVisible && layout?.enabled" [@staggerIn]="items.length">
+      <ion-row>
+        <ion-col [attr.size-xs]="12 / layout?.item?.columnsXs" [attr.size-md]="12 / layout?.item?.columnsMd"
+        [attr.size-lg]="12 / layout?.item?.columnsLg" *ngFor="let item of items;trackBy:trackByFn">
+          <app-shop-item [styles]="layout?.item" [item]="item" [customObservable]="loadAndScroll"
+          (click)="onItemTouched(item)">
+          </app-shop-item>
+        </ion-col>
+      </ion-row>
+      <ion-infinite-scroll (ionInfinite)="onLoadMore($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-list>
+
+  </ion-grid>
+
+</ion-content>

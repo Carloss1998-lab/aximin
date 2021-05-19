@@ -1,0 +1,89 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content scrollEvents="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="onReload($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_REVIEWS' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" icon="star" [text]="'EMPTY_REVIEWS' | translate">
+    </empty-view>
+
+    <ion-row class="ion-justify-content-center">
+      <ion-col size-xs="12" size-lg="10">
+
+        <section *ngIf="isLoadingViewVisible">
+          <div class="skeleton-item light-bg radius" *ngFor="let item of skeletonReviews">
+            <div class="wrapper">
+              <div class="avatar">
+                <ngx-skeleton-loader appearance="circle" [theme]="{ width: '80px', height: '80px' }">
+                </ngx-skeleton-loader>
+              </div>
+              <div class="title">
+                <div>
+                  <ngx-skeleton-loader
+                    [theme]="{ width: '30%', 'border-radius': '0', height: '15px', 'margin-bottom': '10px'}">
+                  </ngx-skeleton-loader>
+                </div>
+                <div>
+                  <ngx-skeleton-loader [theme]="{ width: '70%', 'border-radius': '0', height: '15px' }">
+                  </ngx-skeleton-loader>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <ion-list lines="none" [@staggerIn]="reviews.length" *ngIf="isContentViewVisible">
+          <div class="ion-margin-bottom ion-padding" *ngFor="let review of reviews;trackBy:trackByFn">
+            <ion-item class="ion-no-padding">
+
+              <ion-avatar slot="start">
+                <img defaultImage="./assets/imgs/avatar.png" [lazyLoad]="review.user?.photo?.url()"
+                  [customObservable]="loadAndScroll" />
+              </ion-avatar>
+
+              <ion-label>
+                <ion-text color="dark">
+                  <p class="no-margin">
+                    {{ review.user?.name || ('GUEST' | translate) }}
+                  </p>
+                </ion-text>
+                <ion-text color="medium">
+                  <p class="text-medium">
+                    {{ review.createdAt | dateGlobal:'mediumDate' }}
+                  </p>
+                </ion-text>
+                <bar-rating [rate]="review.rating" [readOnly]="true" [max]="5" [theme]="'stars'">
+                </bar-rating>
+              </ion-label>
+            </ion-item>
+            <div>
+              <ion-text color="dark">
+                <p class="no-margin">{{ review.comment }}</p>
+              </ion-text>
+            </div>
+          </div>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-infinite-scroll *ngIf="isContentViewVisible" (ionInfinite)="onLoadMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>

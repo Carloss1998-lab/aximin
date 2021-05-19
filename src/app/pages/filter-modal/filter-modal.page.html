@@ -1,0 +1,90 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title></ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onDismiss()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-text-center">
+
+  <ion-item class="ion-margin-top">
+    <ion-checkbox (ionChange)="onQueryChanged($event)" [(ngModel)]="query.isFeatured" [disabled]="isLoading">
+    </ion-checkbox>
+    <ion-label class="ion-margin-horizontal" color="medium">
+      {{ 'FEATURED' | translate }}
+    </ion-label>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-checkbox (ionChange)="onQueryChanged($event)" [(ngModel)]="query.isOnSale" [disabled]="isLoading">
+    </ion-checkbox>
+    <ion-label class="ion-margin-horizontal" color="medium">
+      {{ 'ON_SALE' | translate }}
+    </ion-label>
+  </ion-item>
+
+  <div>
+    <ion-text color="medium">
+      <h5 class="text-normal bold">
+        {{ 'RATING' | translate }}
+      </h5>
+    </ion-text>
+
+    <ion-item class="ion-padding-bottom">
+      <ion-range debounce="1500" color="dark" step="1" dualKnobs="true" pin="true" [min]="minRating" [max]="maxRating" [disabled]="isLoading" [(ngModel)]="query.rating" (ionChange)="onRangeChanged($event)">
+      </ion-range>
+    </ion-item>
+  </div>
+
+  <div class="ion-margin-bottom">
+    <ion-text color="medium">
+      <h5 class="text-normal bold ion-no-margin">
+        {{ 'PRICE' | translate }}
+      </h5>
+      <p class="text-medium bold">
+        {{ query.priceRange.lower | currencyGlobal }} -
+        {{ query.priceRange.upper | currencyGlobal }}
+      </p>
+    </ion-text>
+    <ion-item class="ion-padding-bottom">
+      <ion-range debounce="1500" color="dark" step="10" dualKnobs="true" pin="true" [min]="minPrice" [max]="maxPrice" [disabled]="isLoading" [(ngModel)]="query.priceRange" (ionChange)="onRangeChanged($event)">
+      </ion-range>
+    </ion-item>
+  </div>
+
+  <app-accordion [name]="'CATEGORIES' | translate">
+    <ion-item *ngFor="let category of categories;trackBy:trackByFn">
+      <ion-checkbox (ionChange)="onCategoryChanged($event)" [(ngModel)]="category.isChecked" [disabled]="isLoading">
+      </ion-checkbox>
+      <ion-label class="ion-margin-horizontal" color="medium">
+        {{ category.name }}
+      </ion-label>
+    </ion-item>
+  </app-accordion>
+
+  <app-accordion [name]="'BRANDS' | translate">
+    <ion-item *ngFor="let brand of brands;trackBy:trackByFn">
+      <ion-checkbox (ionChange)="onBrandChanged($event)" [(ngModel)]="brand.isChecked" [disabled]="isLoading">
+      </ion-checkbox>
+      <ion-label class="ion-margin-horizontal" color="medium">
+        {{ brand.name }}
+      </ion-label>
+    </ion-item>
+  </app-accordion>
+
+</ion-content>
+
+<ion-footer class="ion-padding ion-text-center">
+  <ion-button strong color="dark" [disabled]="isLoading" (click)="onApplyButtonTouched()">
+    <span *ngIf="!isLoading">
+      {{ 'SEE_THE_RESULTS' | translate }} ({{ count }})
+    </span>&nbsp;
+    <span *ngIf="isLoading">
+      <ion-spinner name="dots" color="light"></ion-spinner>
+    </span>
+  </ion-button>
+</ion-footer>

@@ -1,0 +1,8 @@
+<div class="container">
+  <ion-icon [name]="icon" *ngIf="!image"></ion-icon>
+  <img [src]="image" *ngIf="image" [width]="imageWidth" />
+  <ion-text color="medium">
+    <p>{{ text }}</p>
+  </ion-text>
+  
+</div>

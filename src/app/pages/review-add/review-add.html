@@ -1,0 +1,29 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="onDismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'ADD_REVIEW' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="ion-text-center">
+    <bar-rating [(rate)]="input.rating" [readOnly]="false" [max]="5" [theme]="'stars'">
+    </bar-rating>
+    <ion-item class="ion-margin-vertical" lines="none" class="radius" color="light">
+      <ion-textarea [(ngModel)]="input.comment" rows="8" [placeholder]="'COMMENT' | translate"
+        (keyup.enter)="onSubmit()"></ion-textarea>
+    </ion-item>
+    <ion-button class="ion-margin-vertical" shape="round" color="primary" strong
+      [disabled]="isLoadingViewVisible"
+      (click)="onSubmit()">
+      <ion-spinner *ngIf="isLoadingViewVisible"></ion-spinner>
+      <span *ngIf="!isLoadingViewVisible">{{ 'SUBMIT' | translate }}</span>
+    </ion-button>
+  </div>
+</ion-content>

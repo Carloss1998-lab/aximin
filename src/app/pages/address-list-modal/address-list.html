@@ -1,0 +1,52 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="onDismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ 'ADDRESSES' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onAddButtonTouched()">
+        <ion-icon name="add" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
+      refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+  </empty-view>
+
+  <empty-view *ngIf="isEmptyViewVisible" image="./assets/imgs/undraw_address_udes.svg" imageWidth="200"
+    [text]="'EMPTY_ADDRESSES' | translate">
+  </empty-view>
+
+  <ion-list lines="none" class="ion-margin-top" *ngIf="isContentViewVisible">
+    <ion-item class="ion-text-wrap ion-margin-bottom" color="light" *ngFor="let address of addresses">
+      <ion-icon name="pin" color="primary" slot="start"></ion-icon>
+      <ion-label>
+        <h2 class="bold">{{ address.name }}</h2>
+        <p>{{ address }}</p>
+        <p>{{ 'CONTACT_PHONE' | translate }}: {{ address.phone }}</p>
+      </ion-label>
+      <ion-button strong color="primary" slot="end" (click)="onAddressTouched(address)">
+        {{ 'SELECT' | translate }}
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <div class="ion-margin-vertical" *ngIf="isLoadingViewVisible">
+    <ngx-skeleton-loader count="12" [theme]="{ 'border-radius': '0', height: '60px' }">
+    </ngx-skeleton-loader>
+  </div>
+
+</ion-content>

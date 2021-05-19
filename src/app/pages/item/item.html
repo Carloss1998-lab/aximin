@@ -1,0 +1,246 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar fixed>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title></ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToCartPage()" [disabled]="!item">
+        <ion-icon slot="start" name="cart"></ion-icon>
+        <span *ngIf="preference.cartCount">
+          {{ preference.cartCount }}
+        </span>
+      </ion-button>
+      <ion-button color="dark" [disabled]="!item" (click)="onLike()">
+        <ion-icon slot="icon-only" [name]="isLiked? 'heart' : 'heart-outline'" color="primary">
+        </ion-icon>
+      </ion-button>
+      <ion-button class="btn-share" [disabled]="!item" (click)="onShare()">
+        <ion-icon slot="icon-only" name="share"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #container scrollEvents="true">
+
+  <ng-template #itemGalleryTemplate let-data="data">
+    <ng-container>
+      <ion-slides style="width: 100%; height: 100%;" [options]="sliderGalleryOpts">
+        <ion-slide>
+          <div class="swiper-zoom-container">
+            <img style="width: 100%; height: 100%; object-fit: contain;" [src]="data.src">
+          </div>
+        </ion-slide>
+      </ion-slides>
+    </ng-container>
+  </ng-template>
+
+  <web-social-share (closed)="webSocialShare.onClosed()" [show]="webSocialShare.show" [share]="webSocialShare.share">
+    <ion-icon class="block" name="logo-facebook" slot="facebook"
+      style="color:var(--ion-color-fb);width:36px;height:36px;">
+    </ion-icon>
+    <ion-icon class="block" name="logo-twitter" slot="twitter"
+      style="color:var(--ion-color-twitter);width:36px;height:36px;">
+    </ion-icon>
+    <ion-icon class="block" name="logo-whatsapp" slot="whatsapp"
+      style="color:var(--ion-color-whatsapp);width:36px;height:36px;">
+    </ion-icon>
+    <ion-icon class="block" name="copy-outline" slot="copy"
+      style="color: var(--ion-color-medium);width:36px;height:36px;">
+    </ion-icon>
+  </web-social-share>
+
+  <ion-grid fixed>
+
+    <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+    </empty-view>
+
+    <empty-view *ngIf="isEmptyViewVisible" icon="alert-circle-outline" [text]="'EMPTY_DATA' | translate">
+    </empty-view>
+
+    <ion-row class="ion-justify-content-center">
+      <ion-col size-xs="12" size-lg="10">
+
+        <div *ngIf="isLoadingViewVisible">
+
+          <ion-row>
+            <ion-col size-xs="12" size-lg="6">
+              <ngx-skeleton-loader count="1"
+                [theme]="{ 'border-radius': '0', margin: '0 0 16px', height: '250px', width: '100%' }">
+              </ngx-skeleton-loader>
+            </ion-col>
+            <ion-col size-xs="12" size-lg="6">
+              <ngx-skeleton-loader count="4" [theme]="{ 'border-radius': '0', height: '10px' }">
+              </ngx-skeleton-loader>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="bg-light ion-margin-vertical">
+            <ion-col>
+              <div class="ion-padding">
+                <ngx-skeleton-loader count="16" [theme]="{ 'border-radius': '0', height: '10px' }">
+                </ngx-skeleton-loader>
+              </div>
+            </ion-col>
+          </ion-row>
+
+        </div>
+
+        <div *ngIf="isContentViewVisible">
+
+          <ion-row>
+            <ion-col size-xs="12" size-lg="6">
+              <!-- Slide List -->
+              <div class="border-light ion-padding" *ngIf="images.length">
+                <ion-slides class="main" #slides pager gallerize="itemGallery" selector=".bg-img"
+                  (ionSlidesDidLoad)="onSlidesDidLoad($event)" (ionSlideWillChange)="onSlidesWillChange($event)">
+                  <ion-slide *ngFor="let photo of images">
+                    <div class="slide bg-img" [attr.imageSrc]="photo.url()" [attr.thumbSrc]="photo.url()"
+                      [lazyLoad]="photo.url()" [customObservable]="slidesObservable"
+                      defaultImage="./assets/imgs/placeholder-large.jpg">
+                    </div>
+                  </ion-slide>
+                </ion-slides>
+              </div>
+
+            </ion-col>
+            <ion-col size-xs="12" size-lg="6">
+              <h4>{{ item?.name }}</h4>
+              <p *ngIf="item?.salePrice">
+                <span class="text-large" class="bold">{{ item?.salePrice | currencyGlobal }}&nbsp;</span>
+                <ion-text color="medium">
+                  <s class=" text-small bold">{{ item?.price | currencyGlobal }}</s>
+                </ion-text>
+              </p>
+              <p class="text-large bold" *ngIf="!item?.salePrice">
+                {{ item?.price | currencyGlobal }}
+              </p>
+              <bar-rating [rate]="item.ratingAvg" [readOnly]="true" [max]="5" [theme]="'stars'"></bar-rating>
+
+              <div *ngIf="item?.hasVariations()">
+                <h6>{{ 'CHOOSE_VARIATION' | translate }}</h6>
+
+                <ion-button class="btn-variation ion-text-capitalize ion-margin-end" size="small"
+                  [color]="selectedVariation?.id === variation.id ? 'primary' : 'light'"
+                  (click)="onVariationTouched(variation)" *ngFor="let variation of variations">
+                  {{ variation.name }}
+                </ion-button>
+              </div>
+
+              <div class="flex align-items-center justify-content-center ion-margin-vertical">
+                <ion-button class="button-quantity" color="dark"
+                  [disabled]="isQuantityInvalid() || item.isNotAvailable" (click)="dec()">
+                  <ion-icon slot="icon-only" name="remove"></ion-icon>
+                </ion-button>
+                <span class="label-quantity">{{ qty }}</span>
+                <ion-button class="button-quantity" color="primary" [disabled]="item.isNotAvailable" (click)="inc()">
+                  <ion-icon slot="icon-only" name="add"></ion-icon>
+                </ion-button>
+              </div>
+
+              <div>
+                <ion-button class="ion-text-uppercase ion-margin-vertical" strong expand="block" shape="round"
+                  color="primary" [disabled]="item.isNotAvailable || isAddingToCart" (click)="onAddToCart()">
+                  <ion-spinner color="light" *ngIf="isAddingToCart"></ion-spinner>
+                  <span *ngIf="!isAddingToCart && !item.isNotAvailable">
+                    {{ 'ADD_TO_CART' | translate }}
+                  </span>
+                  <span *ngIf="item.isNotAvailable">
+                    {{ 'ITEM_NOT_AVAILABLE' | translate }}
+                  </span>
+                </ion-button>
+              </div>
+
+            </ion-col>
+
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <div class="ion-padding ion-text-center" *ngIf="itemDescription">
+                <h3 class="ion-no-margin">
+                  <ion-text color="medium">
+                    {{ 'DESCRIPTION' | translate }}
+                  </ion-text>
+                </h3>
+                <div class="ion-text-justify" [innerHTML]="itemDescription"></div>
+              </div>
+
+              <div class="ion-padding">
+                <h3>{{ 'REVIEWS' | translate }}</h3>
+
+                <div *ngIf="!reviews.length" style="height:170px;" class="ion-text-center">
+                  <div class="flex-center">
+                    <ion-text color="medium">
+                      <p>
+                        {{ 'EMPTY_REVIEWS' | translate }}
+                      </p>
+                    </ion-text>
+                  </div>
+
+                </div>
+
+                <div *ngFor="let review of reviews;trackBy:trackByFn">
+                  <ion-item lines="none">
+                    <ion-avatar slot="start">
+                      <img defaultImage="./assets/imgs/avatar.png" [lazyLoad]="review.user?.photo?.url()"
+                        [customObservable]="loadAndScroll" />
+                    </ion-avatar>
+
+                    <ion-label>
+                      <ion-text color="dark">
+                        <p class="no-margin">
+                          {{ review.user?.name || ('GUEST' | translate) }}
+                        </p>
+                      </ion-text>
+                      <bar-rating [rate]="review.rating" [readOnly]="true" [max]="5" [theme]="'stars'">
+                      </bar-rating>
+                      <ion-text color="medium">
+                        <p class="text-medium">
+                          {{ review.createdAt | dateGlobal:'mediumDate' }}
+                        </p>
+                      </ion-text>
+                    </ion-label>
+
+                  </ion-item>
+
+                  <div class="ion-padding-horizontal">
+                    <ion-text color="dark">
+                      <p class="no-margin">{{ review.comment }}</p>
+                    </ion-text>
+                  </div>
+
+                </div>
+
+                <div class="ion-margin-vertical ion-text-center" *ngIf="reviews.length">
+                  <ion-button class="" color="light" [routerLink]="['./reviews']">
+                    {{ 'VIEW_ALL_REVIEWS' | translate }}
+                  </ion-button>
+                </div>
+              </div>
+
+            </ion-col>
+          </ion-row>
+
+          <div *ngIf="item?.relatedItems?.length">
+            <h5>{{ 'RELATED_ITEMS' | translate }}</h5>
+          </div>
+
+          <ion-slides class="ion-margin-vertical" class="related" (ionSlideWillChange)="onSlidesRelatedDrag()"
+            [options]="relatedSlidesConfig">
+            <ion-slide *ngFor="let item of item?.relatedItems">
+              <app-shop-item [item]="item" [customObservable]="slidesRelatedObservable"
+                [routerLink]="['../../' + item.slug]">
+              </app-shop-item>
+            </ion-slide>
+          </ion-slides>
+
+        </div>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

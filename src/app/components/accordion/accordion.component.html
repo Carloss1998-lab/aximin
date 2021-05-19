@@ -1,0 +1,9 @@
+
+<h5 class="text-normal bold" (click)="toggleAccordion()">
+  {{ name }}
+  <ion-icon name="chevron-up" *ngIf="isOpen"></ion-icon>
+  <ion-icon name="chevron-down" *ngIf="!isOpen"></ion-icon>
+</h5>
+<div [ngClass]="this.isOpen ? 'active' : 'inactive'">
+  <ng-content></ng-content>
+</div>

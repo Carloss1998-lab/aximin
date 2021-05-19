@@ -1,0 +1,49 @@
+<ion-header class="ion-no-border">
+
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="onDismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ 'PAYMENT' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onAddButtonTouched()">
+        <ion-icon name="add" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}" refreshingText="{{ 'REFRESHING' | translate }}">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'ERROR_DATA' | translate">
+  </empty-view>
+
+  <empty-view *ngIf="isEmptyViewVisible" image="./assets/imgs/undraw_credit_card_df1m.svg" imageWidth="200" [text]="'EMPTY_CARDS' | translate">
+  </empty-view>
+
+  <ion-list lines="none" margin-top *ngIf="isContentViewVisible">
+    <ion-item color="light" margin-bottom *ngFor="let card of cards">
+      <img src="./assets/imgs/{{card.formatBrand()}}.png" width="40" slot="start" />
+      <ion-label>
+        <p>&#8226;&#8226;&#8226;&#8226; {{ card.last4 }}</p>
+      </ion-label>
+      <ion-button strong size="small" color="primary" slot="end" (click)="onCardTouched(card)">
+        {{ 'CHOOSE_THIS_PAYMENT_METHOD' | translate }}
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <div margin-vertical *ngIf="isLoadingViewVisible">
+    <ngx-skeleton-loader count="12" [theme]="{ 'border-radius': '0', height: '70px' }">
+    </ngx-skeleton-loader>
+  </div>
+
+</ion-content>

@@ -1,0 +1,7 @@
+{
+  "name": "IonShop v2",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

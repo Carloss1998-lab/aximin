@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1008548436945",
+    "project_id": "aximin-a5ddb",
+    "storage_bucket": "aximin-a5ddb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008548436945:android:32b6a7a35cfd85acc4def0",
+        "android_client_info": {
+          "package_name": "com.calebaguida.aximin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1008548436945-k6hujfcohs8d7fv4eiai6j186bnpgt50.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeMxiMv7yi24XVIQiAXb5JWVsuP_ndDHg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1008548436945-jibhcdcr2qet0dqjqmmne9puajmn7a1f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1008548436945-77p2vdengsnu056m77u0gsnjos8tc98f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "aximin.calebaguida.com"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

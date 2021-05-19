@@ -1,0 +1,57 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="onDismiss()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ 'EDIT_PROFILE' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" #profileForm="ngForm" novalidate>
+
+    <ion-label position="stacked" color="medium">
+      <span>{{ 'NAME' | translate }}</span>
+    </ion-label>
+    <ion-item class="ion-margin-vertical" lines="none" color="light">
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
+
+    <div *ngIf="!user?.authData">
+      <ion-label position="stacked" color="medium">
+        <span>{{ 'USERNAME' | translate }}</span>
+      </ion-label>
+      <ion-item class="ion-margin-vertical" lines="none" color="light">
+        <ion-input type="text" formControlName="username"></ion-input>
+      </ion-item>
+    </div>
+
+    <ion-label position="stacked" color="medium">
+      <span>{{ 'EMAIL' | translate }}</span>
+    </ion-label>
+    <ion-item class="ion-margin-vertical" lines="none" color="light">
+      <ion-input type="email" formControlName="email" (keyup.enter)="profileForm.ngSubmit.emit()">
+      </ion-input>
+    </ion-item>
+
+    <ion-label position="stacked" color="medium">
+      <span>{{ 'UPLOAD_PICTURE' | translate }}</span>
+    </ion-label>
+
+    <div class="ion-margin-vertical">
+      <app-upload-box (onFileUploaded)="onFileUploaded($event)">
+      </app-upload-box>
+    </div>
+
+    <div>
+      <ion-button strong type="submit" shape="round" color="primary" [disabled]="isLoadingViewVisible">
+        <ion-spinner *ngIf="isLoadingViewVisible"></ion-spinner>
+        <span *ngIf="!isLoadingViewVisible">{{ 'SAVE' | translate }}</span>
+      </ion-button>
+    </div>
+
+  </form>
+</ion-content>

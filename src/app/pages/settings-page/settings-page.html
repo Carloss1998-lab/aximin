@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="onDismiss()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ 'SETTINGS' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-item color="light" lines="none" class="ion-margin-vertical" *ngIf="isHybrid()">
+    <ion-label>{{ 'PUSH_NOTIFICATIONS' | translate }}</ion-label>
+    <ion-toggle (ionChange)="onChangeIsPushEnabled($event)" [(ngModel)]="preference.isPushEnabled">
+    </ion-toggle>
+  </ion-item>
+
+  <ion-list>
+    <ion-radio-group allowEmptySelection="false" [value]="preference.lang" (ionChange)="onChangeLang($event)">
+      <ion-list-header>
+        <ion-label>
+          <span class="bold" color="dark">{{ 'LANGUAGE' | translate }}</span>
+        </ion-label>
+      </ion-list-header>
+      <ion-item color="light">
+        <ion-label>{{ 'ENGLISH' | translate }}</ion-label>
+        <ion-radio value="en"></ion-radio>
+      </ion-item>
+      <ion-item color="light">
+        <ion-label>{{ 'SPANISH' | translate }}</ion-label>
+        <ion-radio value="es"></ion-radio>
+      </ion-item>
+      <ion-item color="light" lines="none">
+        <ion-label>{{ 'ARABIC' | translate }}</ion-label>
+        <ion-radio value="ar"></ion-radio>
+      </ion-item>
+      <ion-item color="light" lines="none">
+        <ion-label>{{ 'FRENCH' | translate }}</ion-label>
+        <ion-radio value="ar"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+</ion-content>
