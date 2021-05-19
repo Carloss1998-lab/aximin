@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  serverUrl: 'http://localhost:1337/api',
+  serverUrl: 'https://localhost:1337/api',
   appUrl: 'https://www.calebaguida.com',
   appImageUrl: 'https://www.tryion.shop/assets/imgs/ionshop.png',
   appId: 'com.calebaguida.aximin',
@@ -28,3 +28,4 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+import 'zone.js/dist/zone-error';

@@ -15,3 +15,5 @@ export const environment = {
     digitsInfo: '1.2-2',
   },
 };
+
+import 'zone.js/dist/zone-error';
