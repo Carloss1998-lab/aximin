@@ -12,7 +12,7 @@ export const environment = {
   currency: {
     code: 'XOF',
     display: 'symbol',
-    digitsInfo: '1.2-2',
+    digitsInfo: '1.0-0',
   },
 };
 
