@@ -38,8 +38,8 @@ export class AddressAddPage extends BasePage {
       zone: new FormControl(null, Validators.required),
       subzone: new FormControl(null, Validators.required),
       city: new FormControl('', Validators.required),
-      zipcode: new FormControl('', Validators.required),
-      address: new FormControl('', Validators.required),
+      //  zipcode: new FormControl('', Validators.required),
+      //address: new FormControl('', Validators.required),
       name: new FormControl('', Validators.required),
       phone: new FormControl('', Validators.required),
       isDefault: new FormControl(false),
@@ -76,13 +76,13 @@ export class AddressAddPage extends BasePage {
     try {
 
       await this.showLoadingView({ showOverlay: false });
-      
+
       const formData = Object.assign({}, this.form.value);
       const address = await this.customerAddressService.create(formData);
-      
+
       this.showContentView();
       this.onDismiss(address);
-      
+
     } catch (error) {
       this.showContentView();
       this.translate.get('ERROR_NETWORK').subscribe(str => this.showToast(str));

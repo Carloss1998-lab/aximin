@@ -157,7 +157,7 @@
   "HELP": "Aide",
   "UPLOAD_PICTURE": "Télécharger une photo",
   "CARDHOLDER_NAME": "Nom du titulaire de la carte",
-  "STATE": "Etat",
+  "STATE": "Zone/Département",
   "CITY": "Ville",
   "COUNTRY": "Pays",
   "COUNTRY_PLACEHOLDER": "Code pays (par exemple, 'US').",
