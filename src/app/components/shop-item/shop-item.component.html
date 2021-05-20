@@ -5,7 +5,7 @@
     <div class="bg-img" [offset]="300" defaultImage="./assets/imgs/placeholder.png"
       [lazyLoad]="item.featuredImageThumb?.url()" [customObservable]="scrollObservable"></div>
     <span *ngIf="item.salePrice">
-      {{ item.discount | percent }} {{ 'OFF' | translate }}
+      {{ '- ' | translate }} {{ item.discount | percent }}
     </span>
   </div>
 
