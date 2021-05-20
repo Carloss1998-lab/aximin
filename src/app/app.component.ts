@@ -124,7 +124,7 @@ export class AppComponent {
 
     try {
 
-      const supportedLangs = ['en', 'es', 'ar'];
+      const supportedLangs = ['en', 'es', 'ar', 'fr'];
       const browserLang = navigator.language.substr(0, 2);
 
       let lang = await this.localStorage.getLang();
