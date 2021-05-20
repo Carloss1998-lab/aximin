@@ -50,9 +50,11 @@ import { GoogleLoginProvider } from 'angularx-social-login';
 
 import localeAr from '@angular/common/locales/ar';
 import localeEs from '@angular/common/locales/es';
+import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeAr, 'ar');
 registerLocaleData(localeEs, 'es');
+registerLocaleData(localeEs, 'fr');
 
 @NgModule({
   declarations: [AppComponent],
@@ -114,4 +116,4 @@ registerLocaleData(localeEs, 'es');
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
