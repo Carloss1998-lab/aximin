@@ -7,7 +7,7 @@
       (ionClear)="onClearSearch()">
     </ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button color="darkbis" size="small" class="ion-text-uppercase" (click)="onPresentFilterModal()">
+      <ion-button color="blue" size="small" class="ion-text-uppercase" (click)="onPresentFilterModal()">
         <ion-icon slot="start" name="funnel"></ion-icon>
         <span class="text-small">{{ 'REFINE' | translate }}</span>
       </ion-button>
@@ -30,7 +30,7 @@
         <ion-item class="hover" button detail="false" style="--min-height: 70px;" *ngFor="let suggestion of suggestions;trackBy:trackByFn"
           (click)="this.suggestions = [];" [routerLink]="['./' + suggestion.slug]">
           <ion-label>
-            <ion-text color="darkbis">
+            <ion-text color="blue">
               <span class="link bold text-medium">
                 {{ suggestion.name }}
               </span>

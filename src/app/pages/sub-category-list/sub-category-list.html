@@ -4,7 +4,7 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button *ngIf="isContentViewVisible && layout?.enabled" strong color="dark" size="small" [routerLink]="['../items']" [queryParams]="{ cat: params?.category?.id }">
+      <ion-button *ngIf="isContentViewVisible && layout?.enabled" strong color="blue" size="small" [routerLink]="['../items']" [queryParams]="{ cat: params?.category?.id }">
         {{ 'VIEW_ALL' | translate }}
       </ion-button>
     </ion-buttons>
@@ -49,7 +49,7 @@
           defaultImage="./assets/imgs/placeholder.png"
           [lazyLoad]="category.imageThumb?.url()"
           [customObservable]="loadAndScroll"></div>
-        <ion-text color="dark">
+        <ion-text color="blue">
           <p class="link margin-6 text-medium">
             {{ category.name }}
           </p>

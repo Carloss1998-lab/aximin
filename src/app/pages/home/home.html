@@ -33,7 +33,7 @@
           *ngFor="let suggestion of suggestions;trackBy:trackByFn"
           [routerLink]="['./items/' + suggestion.slug]">
           <ion-label>
-            <ion-text color="darkbis">
+            <ion-text color="blue">
               <span class="link bold text-medium">
                 {{ suggestion.name }}
               </span>
@@ -96,7 +96,7 @@
               (click)="onCategoryTouched(category)">
               <div class="circle bg-img" defaultImage="./assets/imgs/placeholder.png" [offset]="300"
                 [lazyLoad]="category.imageThumb?.url()" [customObservable]="loadAndScroll"></div>
-              <ion-text color="darkbis">
+              <ion-text color="blue">
                 <p class="link">
                   {{ category.name }}
                 </p>
@@ -128,7 +128,7 @@
             <ion-slide *ngFor="let brand of brands;trackBy:trackByFn">
               <div class="full-width" [routerLink]="['./items']" [queryParams]="{ brand: brand.id }">
                 <div class="brand-img" [style.background-image]="'url(' + brand.image?.url() + ')'"></div>
-                <ion-text color="darkbis">
+                <ion-text color="blue">
                   <p class="link text-normal">
                     {{ brand.name }}
                   </p>
@@ -143,7 +143,7 @@
                 <div [routerLink]="['./items']" [queryParams]="{ brand: brand.id }">
                   <div class="brand-img" defaultImage="./assets/imgs/placeholder.png" [offset]="300"
                     [lazyLoad]="brand.image?.url()" [customObservable]="loadAndScroll"></div>
-                  <ion-text color="darkbis">
+                  <ion-text color="blue">
                     <p class="link text-normal">
                       {{ brand.name }}
                     </p>
