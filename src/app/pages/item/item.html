@@ -11,7 +11,7 @@
           {{ preference.cartCount }}
         </span>
       </ion-button>
-      <ion-button color="dark" [disabled]="!item" (click)="onLike()">
+      <ion-button color="darkbis" [disabled]="!item" (click)="onLike()">
         <ion-icon slot="icon-only" [name]="isLiked? 'heart' : 'heart-outline'" color="primary">
         </ion-icon>
       </ion-button>
@@ -129,7 +129,7 @@
               </div>
 
               <div class="flex align-items-center justify-content-center ion-margin-vertical">
-                <ion-button class="button-quantity" color="dark"
+                <ion-button class="button-quantity" color="darkbis"
                   [disabled]="isQuantityInvalid() || item.isNotAvailable" (click)="dec()">
                   <ion-icon slot="icon-only" name="remove"></ion-icon>
                 </ion-button>
@@ -189,7 +189,7 @@
                     </ion-avatar>
 
                     <ion-label>
-                      <ion-text color="dark">
+                      <ion-text color="darkbis">
                         <p class="no-margin">
                           {{ review.user?.name || ('GUEST' | translate) }}
                         </p>
@@ -206,7 +206,7 @@
                   </ion-item>
 
                   <div class="ion-padding-horizontal">
-                    <ion-text color="dark">
+                    <ion-text color="darkbis">
                       <p class="no-margin">{{ review.comment }}</p>
                     </ion-text>
                   </div>
