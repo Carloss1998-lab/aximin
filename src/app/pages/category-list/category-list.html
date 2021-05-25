@@ -26,7 +26,7 @@
         <ion-item class="hover" button detail="false" style="--min-height: 70px;" *ngFor="let suggestion of suggestions"
           (click)="onSuggestionTouched(suggestion)">
           <ion-label>
-            <ion-text color="dark">
+            <ion-text color="darkbis">
               <span class="link bold text-medium">
                 {{ suggestion.name }}
               </span>
@@ -61,7 +61,7 @@
         *ngFor="let category of categories;trackBy:trackByFn">
         <div class="circle bg-img" defaultImage="./assets/imgs/placeholder.png" [lazyLoad]="category.imageThumb?.url()"
           [customObservable]="loadAndScroll"></div>
-        <ion-text color="dark">
+        <ion-text color="darkbis">
           <p class="link margin-6 text-medium">
             {{ category.name }}
           </p>
