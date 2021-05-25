@@ -1,6 +1,6 @@
 <ion-tabs>
 
-  <ion-tab-bar slot="bottom" color="dark" *ngIf="platform.is('mobile')" fixed>
+  <ion-tab-bar slot="bottom" color="darkbis" *ngIf="platform.is('mobile')" fixed>
     <ion-tab-button tab="home" layout="icon-top" (click)="handleTabClick($event)">
       <ion-icon name="home"></ion-icon>
       <ion-label>{{ 'HOME' | translate }}</ion-label>
@@ -26,7 +26,7 @@
     </ion-tab-button>
   </ion-tab-bar>
 
-  <ion-tab-bar slot="top" color="dark" *ngIf="platform.is('desktop')" fixed>
+  <ion-tab-bar slot="top" color="darkbis" *ngIf="platform.is('desktop')" fixed>
     <ion-tab-button tab="home" layout="icon-start" (click)="handleTabClick($event)">
       <ion-icon name="home"></ion-icon>
       <ion-label>{{ 'HOME' | translate }}</ion-label>
