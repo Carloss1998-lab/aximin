@@ -36,10 +36,7 @@
                 <ion-icon *ngIf="notification.read" slot="start" name="mail-open" class="notification-icon mr-16"></ion-icon>
                 <ion-icon *ngIf="!notification.read" slot="start" name="mail" class="notification-icon mr-16"></ion-icon>        
                 <ion-label>
-                  <p>{{ notification.message }}</p>
-                  <h2>{{ notification.users.id }}</h2>
-                  <h2>{{ notification.users }}</h2>
-                  <p>{{ notification.message }}</p>
+                  <h2>{{ notification.message }}</h2>
                 </ion-label>
                 <ion-note slot="end" class=" ml-0">{{ notification.createdAt | amDateFormat: 'LL'}}</ion-note>
              </ion-item>
