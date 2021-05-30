@@ -11,7 +11,7 @@ export class TabsPage {
 
   @ViewChild(IonTabs) tabs: IonTabs;
 
-  resetStackTabs = ['home', 'browse', 'cart', 'account'];
+  resetStackTabs = ['home', 'browse', 'cart','notifications', 'account'];
 
   handleTabClick = (event: MouseEvent) => {
     const { tab } = event.composedPath().find((element: any) =>

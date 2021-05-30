@@ -10,6 +10,7 @@ import { Item } from './services/item';
 import { Card } from './services/card';
 import { Preference } from './services/preference';
 import { Cart } from './services/cart';
+import { Notification } from './services/notification';
 import { TranslateService } from '@ngx-translate/core';
 import { LocalStorage } from './services/local-storage';
 import { Installation } from './services/installation';
@@ -35,6 +36,7 @@ export class AppComponent {
   private loader = null;
   private objWindow = null;
   private cartCount = '';
+  private notificationsCount = 0;
 
   constructor(
     private platform: Platform,
@@ -44,6 +46,7 @@ export class AppComponent {
     private preference: Preference,
     private loadingCtrl: LoadingController,
     private cartService: Cart,
+    private notificationService: Notification,
     private statusBar: StatusBar,
     private headerColor: HeaderColor,
     private translate: TranslateService,
@@ -94,6 +97,7 @@ export class AppComponent {
     ItemVariation.getInstance();
 
     this.loadCart();
+    this.loadNotification();
   }
 
   setupNativeAudio() {
@@ -167,6 +171,7 @@ export class AppComponent {
       this.user = e.detail;
       this.updateInstallation();
       this.loadCart();
+      this.loadNotification();
     });
 
     window.addEventListener('user:logout', (e: CustomEvent) => {
@@ -213,10 +218,45 @@ export class AppComponent {
 
   }
 
+  async loadNotification() {
+
+    try {
+
+      if (User.getCurrent()) {
+        
+        const notificatiofns: Notification[] = [];
+
+        let notification = await this.notificationService.load();
+         notification = notification || [];
+        this.updateNotificationsCount(notification);
+      }
+
+    } catch (error) {
+      if (error.code === 209) {
+        this.logout({ silent: true });
+      }
+    }
+
+  }
+
   updateCartCount(cart: Cart) {
-    this.cartCount = cart.items.length;
+   this.cartCount = cart.items.length;
     this.preference.cartCount = this.cartCount;
   }
+  async updateNotificationsCount(notifications: Notification[]) {
+    console.log("Test");
+    console.log(notifications)
+     function IsCurrentUser(element) {
+      return (element["users"]["0"].id == Parse.User.current().id && element["read"]==false); 
+   }
+    notifications = notifications.filter(IsCurrentUser);
+    this.notificationsCount = notifications.length;
+    this.preference.notificationsCount = this.notificationsCount;
+console.log(notifications)
+
+  }
+
+  
 
   async setupPush() {
 
@@ -461,6 +501,7 @@ export class AppComponent {
       this.user = null;
       this.goTo('/');
       this.updateCartCount(new Cart);
+      this.updateNotificationsCount([]);
       this.dismissLoadingView();
       this.updateInstallation();
       this.translate.get('LOGGED_OUT').subscribe(str => this.showToast(str));
@@ -480,3 +521,4 @@ export class AppComponent {
     }
   }
 }
+//export class AppComponent {}

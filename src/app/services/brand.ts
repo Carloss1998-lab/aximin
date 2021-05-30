@@ -17,7 +17,6 @@ export class Brand extends Parse.Object {
 
   load(params: any = {}): Promise<Brand[]> {
     const query = new Parse.Query(Brand);
-
     if (Array.isArray(params.categories)) {
 
       const categories = params.categories.map((id: string) => {

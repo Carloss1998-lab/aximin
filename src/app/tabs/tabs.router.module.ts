@@ -112,6 +112,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'notifications',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>import('../pages/notifications/notifications.module').then(m => m.NotificationsPageModule)
+          }
+        ]
+      },
+      {
         path: 'account',
         children: [
           {

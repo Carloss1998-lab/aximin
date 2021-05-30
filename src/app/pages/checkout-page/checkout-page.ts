@@ -101,6 +101,7 @@ export class CheckoutPage extends BasePage {
     if (User.getCurrent()) {
       this.showLoadingView({ showOverlay: false });
       this.loadCart();
+      
     } else {
       this.showEmptyView();
     }

@@ -6,6 +6,7 @@ export class Preference {
 
   private _lang: string;
   private _cartCount: string;
+  private _notificationsCount : string;
   private _isPushEnabled: boolean;
 
   get lang(): any {
@@ -22,6 +23,13 @@ export class Preference {
 
   set cartCount(val) {
     this._cartCount = val;
+  }
+  get notificationsCount(): any {
+    return this._notificationsCount;
+  }
+
+  set notificationsCount(val) {
+    this._notificationsCount = val;
   }
 
   get isPushEnabled(): any {

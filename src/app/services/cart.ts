@@ -30,8 +30,14 @@ export class Cart extends Parse.Object {
 
   getOne(): Promise<Cart> {
     const query = new Parse.Query(Cart);
+    console.log("Cart1");
+    console.log(query.find());
     query.include('customer');
+    console.log("Cart2");
+    console.log(query.find());
     query.equalTo('customer', Parse.User.current());
+    console.log("User");
+    console.log(Parse.User.current());
     return query.first();
   }
 

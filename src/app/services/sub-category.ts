@@ -41,7 +41,7 @@ export class SubCategory extends Parse.Object {
     if (params.canonical) {
       query.contains('canonical', params.canonical);
     }
-
+    
     query.equalTo('status', 'Active');
     query.doesNotExist('deletedAt');
 
