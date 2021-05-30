@@ -1,17 +1,21 @@
-<ion-header class="ion-no-border" fixed>
-
+<ion-header class="ion-no-border">
   <ion-toolbar fixed>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'Notifications' | translate }}</ion-title>
-  </ion-toolbar>
+    <ion-title></ion-title>
 
+    <ion-buttons slot="end">
+      <ion-button class="btn-share">
+        <ion-label color="primary">
+          <h2>Posez nous votre question ? </h2>
+        </ion-label>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  
-  
   <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
     <ion-refresher-content pullingText="{{ 'PULL_TO_REFRESH' | translate }}"
       refreshingText="{{ 'REFRESHING' | translate }}">
@@ -38,7 +42,7 @@
                 <ion-label>
                   <h2>{{ notification.message }}</h2>
                 </ion-label>
-                <ion-note slot="end" class=" ml-0">{{ notification.createdAt | amDateFormat: 'LL'}}</ion-note>
+                <ion-note slot="end" color="primary">{{ notification.createdAt | amDateFormat: 'LL'}}</ion-note>
              </ion-item>
 
              <ion-item-options side="start">

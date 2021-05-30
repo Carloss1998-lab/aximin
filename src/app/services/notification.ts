@@ -3,6 +3,7 @@ import * as Parse from 'parse';
 import { Brand } from './brand';
 import { User } from './user';
 
+
 @Injectable({
   providedIn: 'root'
 })

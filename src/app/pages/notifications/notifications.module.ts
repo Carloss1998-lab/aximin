@@ -8,14 +8,6 @@ import { MomentModule } from 'ngx-moment';
 import { SharedModule } from '../../shared.module';
 import { NotificationsPage } from './notifications';
 
-//@NgModule({
-  //imports: [IonicModule, CommonModule, FormsModule, RouterModule.forChild([{ path: '', component: NotificationsPage }]), MomentModule],
-  //declarations: [NotificationsPage],
-//})
-//export class NotificationsPageModule {}
-
-
-
 @NgModule({
   declarations: [
     NotificationsPage,
