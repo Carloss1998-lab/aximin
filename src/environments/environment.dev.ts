@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  serverUrl: 'https://admin.calebaguida.com/api',
-  appUrl: 'https://www.calebaguida.com',
+  serverUrl: 'https://admin.missebo.fr/api',
+  appUrl: 'https://www.missebo.fr',
   appImageUrl: 'https://www.tryion.shop/assets/imgs/ionshop.png',
   appId: 'com.calebaguida.aximin',
   fbId: '517337643012906',

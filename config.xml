@@ -2,7 +2,7 @@
 <widget id="com.calebaguida.aximin" version="1.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Mìssèbõ</name>
     <description>Votre application de shopping</description>
-    <author email="info@calebaguida.com" href="https://calebaguida.com/">Quanlabs</author>
+    <author email="info@missebo.fr" href="https://missebo.fr/">Missebo</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -26,7 +26,7 @@
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <preference name="ParseAppId" value="com.calebaguida.aximin" />
-    <preference name="ParseServerUrl" value="http://admin.calebaguida.com/api/" />
+    <preference name="ParseServerUrl" value="http://admin.missebo.fr/api/" />
     <preference name="ParseMultiNotifications" value="true" />
     <preference name="ParseNotificationIcon" value="androidnotificationicon" />
     <preference name="GradlePluginGoogleServicesEnabled" value="true" />
