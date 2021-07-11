@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "1008548436945-gkptp1r13e7mikstn4nhmruehgaa0h1b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.calebaguida.aximin",
-            "certificate_hash": "8c6423f421bcabf08eae62011637351d03a10b33"
-          }
-        },
-        {
           "client_id": "1008548436945-k6hujfcohs8d7fv4eiai6j186bnpgt50.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -42,7 +34,7 @@
               "client_id": "1008548436945-77p2vdengsnu056m77u0gsnjos8tc98f.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "aximin.calebaguida.com"
+                "bundle_id": "aximin.missebo.fr"
               }
             }
           ]
