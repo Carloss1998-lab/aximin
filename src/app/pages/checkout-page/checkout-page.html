@@ -69,6 +69,20 @@
               </ion-radio-group>
             </ion-list>
 
+            <p class="text-medium ion-padding-horizontal ion-no-margin">
+            Disponible au Bénin,Togo, Sénégal, Mali.
+            Créditez le montant, frais compris, sur l'un des numéros Orange/Mobile Money ci-dessous :
+            </p>
+            <ion-list lines="none" class="text-medium">
+              <ion-item><p class="text-medium">🇧🇯 Benin : +229 52 36 30 73</p></ion-item>
+              <ion-item><p class="text-medium">🇹🇬 Togo : </p></ion-item>
+              <ion-item><p class="text-medium">🇲🇱 Mali : </p></ion-item>
+              <ion-item><p class="text-medium">🇸🇳 Senegal :</p> </ion-item>          
+            </ion-list>
+            <p class="text-medium ion-padding-horizontal ion-no-margin">
+Vous recevrez une confirmation dès reception du paiement
+            </p>
+
             <ion-list [hidden]="paymentMethodField.value !== 'Card'">
               <ion-radio-group mode="md" formControlName="card">
                 <ion-item *ngFor="let card of cards">

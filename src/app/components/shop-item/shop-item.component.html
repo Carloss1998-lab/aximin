@@ -11,13 +11,13 @@
 
   <ion-card-content class="ion-text-center">
 
-    <ion-text color="dark">
+    <ion-text color="tertiary">
       <p class="link ellipsis text-medium">{{ item.name }}</p>
     </ion-text>
 
     <bar-rating [rate]="item.ratingAvg" [readOnly]="true" [max]="5" [theme]="'stars'"></bar-rating>
 
-    <ion-text color="dark">
+    <ion-text color="success">
       <p class="ion-no-margin" *ngIf="item.salePrice">
         <span class="bold">{{ item.salePrice | currencyGlobal }}&nbsp;</span>
         <small>
