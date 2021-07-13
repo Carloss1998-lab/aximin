@@ -7,7 +7,7 @@
 
     <ion-buttons slot="end">
       <ion-button class="btn-share">
-        <ion-label color="primary">
+        <ion-label color="blue">
           <h2>Posez nous vos questions ? </h2>
         </ion-label>
       </ion-button>
@@ -27,8 +27,7 @@
     <empty-view *ngIf="isErrorViewVisible" icon="alert-circle-outline" [text]="'Veuillez vous connecter' | translate">
     </empty-view>
 
-    <empty-view *ngIf="isEmptyViewVisible" image="./assets/imgs/undraw_address_udes.svg" imageWidth="120"
-      [text]="'EMPTY_ADDRESSES' | translate">
+    <empty-view *ngIf="isEmptyViewVisible" icon="alert-circle-outline" [text]="'Aucune notification' | translate">
     </empty-view>
 
     <ion-row class="ion-justify-content-center" *ngIf="isContentViewVisible">
@@ -42,7 +41,7 @@
                 <ion-label>
                   <h2>{{ notification.message }}</h2>
                 </ion-label>
-                <ion-note slot="end" color="primary">{{ notification.createdAt | amDateFormat: 'LL'}}</ion-note>
+                <ion-note slot="end" color="blue">{{ notification.createdAt | amDateFormat: 'LL'}}</ion-note>
              </ion-item>
 
              <ion-item-options side="start">
