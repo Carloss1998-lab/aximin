@@ -19,7 +19,7 @@
         {{ preference.cartCount }}
       </ion-badge>
     </ion-tab-button>
-        <ion-tab-button tab="notifications" layout="icon-start" (click)="handleTabClick($event)">
+        <ion-tab-button tab="notifications" layout="icon-top" (click)="handleTabClick($event)">
           <ion-icon name="notifications"></ion-icon>
           <ion-label>{{ 'Notif' | translate }}</ion-label>
           <ion-badge class="static margin-6-horizontal" color="light" *ngIf="preference.notificationsCount">
