@@ -53,6 +53,11 @@ export class Category extends Parse.Object {
     return this.get('subCategoryCount');
   }
 
+  get whatsappContact(): string {
+    return this.get('whatsappContact');
+  }
+
+
 }
 
 Parse.Object.registerSubclass('Category', Category);

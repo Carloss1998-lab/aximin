@@ -80,4 +80,16 @@
 
   </ion-grid>
 
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngFor="let params  of subcategories;">
+    <ion-fab-button>
+      <ion-icon name="chatbubble-ellipses-outline" ></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button href={{params.category.whatsappContact}}>
+        <ion-icon name="logo-whatsapp" color="success"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
 </ion-content>
